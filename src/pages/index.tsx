@@ -1,14 +1,17 @@
 //path : mealchoice/src/pages/index.tsx
-// 인덱스 페이지
+// 인덱스 페이지를 로그인 페이지로
 import React from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
 
-export default function Home(){
+export default function Login(){
+    const router = useRouter();
+
+
+
     return (
         <>
-            <div>메인페이지</div>
         </>
     );
 }

@@ -8,7 +8,7 @@ import NavBar from '@/components/NavBar';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Home from '@/pages/index';
+import Home from './index';
 
 const App = ({ Component, pageProps }: AppProps) => {
     return (
@@ -17,12 +17,15 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <title>Meal Choice</title>
                 <meta name="description" content="Meal Choice" />
             </Head>
-            <NavBar />
-
-            <Home />
+            
             
 
-            <Component {...pageProps} />
+            
+
+            <div className="bg-gray-200 min-h-screen"> {/* 여기서 배경색을 설정합니다. */}
+                <Component {...pageProps} />
+            </div>
+            <NavBar />
         </>
     );
 };
