@@ -5,17 +5,17 @@ import { toast } from 'react-toastify';
 import { FiHome, FiUser, FiClock } from 'react-icons/fi';
 import 'tailwindcss/tailwind.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+
 
 const NavBar = () => {
-    const router = useRouter();
-    const isLogin = true; // 로그인 상태에 따라 이 값을 변경하세요.
+    const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
 
-    const onClickLogout = () => {
-        toast.success('로그아웃 되었습니다.');
-        router.push('/');
-    };
+    if (!isLoggedIn) {
+        return null; // 로그인 상태가 아니면 NavBar를 렌더링하지 않습니다.
+    }
 
-    // NavBar 컴포넌트
     return (
         <div className="fixed inset-x-0 bottom-0 bg-black shadow-lg px-4 py-4 flex justify-around items-center">
             <div className="flex-1" />
@@ -25,7 +25,7 @@ const NavBar = () => {
                 </div>
             </Link>
             <div className="flex-1" />
-            <Link href="/" passHref>
+            <Link href="/home" passHref>
                 <div className="px-2">
                     <FiHome className="text-2xl text-white mx-auto" />
                 </div>
