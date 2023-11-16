@@ -29,9 +29,9 @@ export default function Login() {
             
             const user = {
                 uid: result.user.uid,
-                email: result.user.email ?? '', // null이면 빈 문자열로 대체
-                displayName: result.user.displayName ?? '', // null이면 빈 문자열로 대체
-                profilePic: result.user.photoURL ?? 'public/default-profile.png', // null이면 빈 문자열로 대체
+                email: result.user.email ?? '', 
+                displayName: result.user.displayName ?? '',
+                profilePic: result.user.photoURL ?? '',
             };
 
             dispatch(logIn(user)); // Redux store에 사용자 정보 저장
@@ -39,9 +39,8 @@ export default function Login() {
             // Firestore에 사용자 정보 저장
             await setDoc(doc(db, 'users', user.uid), { ...user });
 
-
-
             router.push('/home');
+
         } catch (error) {
             console.error(error);
             // 에러 처리 로직을 추가할 수 있습니다.
@@ -70,3 +69,4 @@ export default function Login() {
         </div>
     );
 }
+

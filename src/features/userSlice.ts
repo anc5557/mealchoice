@@ -10,7 +10,7 @@ interface UserState {
         uid: string;
         email: string; 
         displayName: string; 
-        profilePic: string;
+        profilePic?: string;
     } | null;
 }
 
@@ -31,7 +31,7 @@ export const userSlice = createSlice({
                     uid: action.payload.uid,
                     email: action.payload.email,
                     displayName: action.payload.displayName,
-                    profilePic: action.payload.profilePic || '/default-profile.png'
+                    profilePic: action.payload.profilePic || '', 
                 };
             }
         },
