@@ -2,13 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  GithubAuthProvider,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { app, db } from "../firebase/firebasedb";
 import { useDispatch, useSelector } from "react-redux";
 import { logIn } from "../features/userSlice";
@@ -17,65 +11,36 @@ import { setDoc, doc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
 
+
 export default function Index() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const user = useSelector((state: RootState) => state.user.user); // 사용자 정보를 가져옵니다.
+  const user = useSelector((state: RootState) => state.user.user);
 
-  // 로그인 상태 확인
   useEffect(() => {
     if (user) {
-      router.push("/home"); // 로그인 상태이면 홈 페이지로 리디렉션합니다.
+      router.push("/home");
     }
   }, [user, router]);
 
-  const handleGoogleLogin = async () => {
+  const handleLogin = async (providerType: string) => {
     try {
-      const auth = getAuth(app); // firebase 인증 객체를 가져옵니다.
-      const provider = new GoogleAuthProvider(); // 구글 로그인을 위한 provider 객체를 만듭니다.
-      const result = await signInWithPopup(auth, provider); // 팝업창을 띄우고 구글 로그인을 합니다.
+      const auth = getAuth(app);
+      const provider = providerType === 'google' ? new GoogleAuthProvider() : new GithubAuthProvider();
+      const result = await signInWithPopup(auth, provider);
 
-      const user = {
+      const userData = {
         uid: result.user.uid,
         email: result.user.email ?? "",
         displayName: result.user.displayName ?? "",
         profilePic: result.user.photoURL ?? "",
       };
 
-      dispatch(logIn(user)); // Redux store에 사용자 정보 저장
-
-      // Firestore에 사용자 정보 저장
-      await setDoc(doc(db, "users", user.uid), { ...user });
-
+      dispatch(logIn(userData));
+      await setDoc(doc(db, "users", userData.uid), userData);
       router.push("/home");
     } catch (error) {
       console.error(error);
-      // 에러 처리 로직을 추가할 수 있습니다.
-    }
-  };
-
-  const handleGithubLogin = async () => {
-    try {
-      const auth = getAuth(app); // firebase 인증 객체를 가져옵니다.
-      const provider = new GithubAuthProvider(); // 구글 로그인을 위한 provider 객체를 만듭니다.
-      const result = await signInWithPopup(auth, provider); // 팝업창을 띄우고 구글 로그인을 합니다.
-
-      const user = {
-        uid: result.user.uid,
-        email: result.user.email ?? "",
-        displayName: result.user.displayName ?? "",
-        profilePic: result.user.photoURL ?? "",
-      };
-
-      dispatch(logIn(user)); // Redux store에 사용자 정보 저장
-
-      // Firestore에 사용자 정보 저장
-      await setDoc(doc(db, "users", user.uid), { ...user });
-
-      router.push("/home");
-    } catch (error) {
-      console.error(error);
-      // 에러 처리 로직을 추가할 수 있습니다.
     }
   };
 
@@ -117,7 +82,7 @@ export default function Index() {
               </p>
             </div>
             <div className="flex justify-center space-x-5">
-              <button aria-label="Github login" onClick={handleGithubLogin}>
+              <button aria-label="Github login" onClick={() => handleLogin('github')}>
                 <Image
                   src="/github-mark.svg"
                   alt="Github login"
@@ -125,7 +90,7 @@ export default function Index() {
                   height={40}
                 />
               </button>
-              <button aria-label="Google login" onClick={handleGoogleLogin}>
+              <button aria-label="Google login" onClick={() => handleLogin('google')}>
                 <Image
                   src="/web_light_rd_na.svg"
                   alt="Google Login"

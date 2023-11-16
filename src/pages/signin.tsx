@@ -36,41 +36,41 @@ const SignIn = () => {
 
   const goindex = () => {
     router.push("/");
-  }
+  };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
   };
-  
+
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
-  
+
   const handleEmailLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const auth = getAuth(app);
     try {
-        
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
         password
       );
-      
-      dispatch(logIn({
+
+      dispatch(
+        logIn({
           uid: userCredential.user.uid,
-          email: userCredential.user.email ?? '',
-          displayName: ""
-      }));
-      
+          email: userCredential.user.email ?? "",
+          displayName: "",
+        })
+      );
 
-      router.push('/home');
-
+      router.push("/home");
     } catch (error) {
-      if (error instanceof Error) { // 'error'가 'Error' 인스턴스인지 확인
+      if (error instanceof Error) {
+        // 'error'가 'Error' 인스턴스인지 확인
         console.error(error.name, error.message);
       } else {
-        console.error('An unknown error occurred');
+        console.error("An unknown error occurred");
       }
     }
   };
@@ -138,21 +138,7 @@ const SignIn = () => {
               onChange={handlePasswordChange}
             />
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="remember"
-                name="remember"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label
-                htmlFor="remember"
-                className="ml-2 block text-sm text-gray-800"
-              >
-                로그인 상태 유지
-              </label>
-            </div>
+          <div className="flex items-center justify-end">
             <div>
               <a
                 href="#"
@@ -174,7 +160,7 @@ const SignIn = () => {
             {" "}
             계정이 없으신가요?{" "}
             <Link href="/signup">
-              <span className="font-medium text-blue-600 hover:text-blue-500">
+              <span className="font-medium text-blue-600 hover:text-blue-500 px-2">
                 회원가입
               </span>
             </Link>
