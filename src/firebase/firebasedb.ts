@@ -1,13 +1,8 @@
 // path : mealchoice/src/pages/firebase/firebasedb.ts
 
-// Import the functions you need from the SDKs you need
+
 import { initializeApp } from "firebase/app";
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -19,6 +14,5 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
-const firebasedb = initializeApp(firebaseConfig);
-export default firebasedb;
+export const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);

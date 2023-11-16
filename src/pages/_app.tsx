@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import firebasedb from '../firebase/firebasedb';
+import { app } from '../firebase/firebasedb';
 import 'react-toastify/dist/ReactToastify.css';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -25,7 +25,7 @@ const App = ({ Component, pageProps, router }: AppProps & { router: NextRouter }
 
 
 const InnerComponent = ({ Component, pageProps }: AppProps) => {
-    const auth = getAuth(firebasedb);
+    const auth = getAuth(app);
     const dispatch = useDispatch();
     const user = useSelector((state: { user: any }) => state.user);
     const isLoggedIn = !!user;

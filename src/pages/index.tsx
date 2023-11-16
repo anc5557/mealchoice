@@ -3,10 +3,11 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import firebasedb from '../firebase/firebasedb';
+import { app, db } from '../firebase/firebasedb';
 import { useDispatch, useSelector } from 'react-redux';
 import { logIn } from '../features/userSlice';
 import { RootState } from '../store';
+import { setDoc, doc } from 'firebase/firestore';
 
 export default function Login() {
     const dispatch = useDispatch();
@@ -22,24 +23,24 @@ export default function Login() {
 
     const handleGoogleLogin = async () => {
         try {
-            const auth = getAuth(firebasedb);
-            const provider = new GoogleAuthProvider();
-            const result = await signInWithPopup(auth, provider);
+            const auth = getAuth(app); // firebase 인증 객체를 가져옵니다.
+            const provider = new GoogleAuthProvider(); // 구글 로그인을 위한 provider 객체를 만듭니다.
+            const result = await signInWithPopup(auth, provider); // 팝업창을 띄우고 구글 로그인을 합니다.
             
-            // 사용자 정보를 Redux 상태에 저장합니다.
             const user = {
                 uid: result.user.uid,
-                email: result.user.email,
-                displayName: result.user.displayName,
-                // 필요한 경우 추가적인 사용자 정보
+                email: result.user.email ?? '', // null이면 빈 문자열로 대체
+                displayName: result.user.displayName ?? '', // null이면 빈 문자열로 대체
+                profilePic: result.user.photoURL ?? 'public/default-profile.png', // null이면 빈 문자열로 대체
             };
 
-            dispatch(logIn({
-                uid: result.user.uid,
-                email: result.user.email ?? '', // null이면 빈 문자열로 대체
-                displayName: result.user.displayName ?? '' // null이면 빈 문자열로 대체
-              }));
-              
+            dispatch(logIn(user)); // Redux store에 사용자 정보 저장
+
+            // Firestore에 사용자 정보 저장
+            await setDoc(doc(db, 'users', user.uid), { ...user });
+
+
+
             router.push('/home');
         } catch (error) {
             console.error(error);
