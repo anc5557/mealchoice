@@ -99,14 +99,16 @@ export default function Index() {
           </div>
           <div>
             <div className="flex flex-col justify-center items-center ">
+              <Link href="/signin">
                 <button className="w-36 py-2 px-4 bg-blue-600 text-white font-bold rounded-full mb-4">
-                    Login
+                  Login
                 </button>
-                <Link href="/signup">
-                    <button className="w-36 py-2 px-4 bg-white text-gray-700 font-bold rounded-full border-2 border-gray-600">
-                        SignUp
-                    </button>
-                </Link>
+              </Link>
+              <Link href="/signup">
+                <button className="w-36 py-2 px-4 bg-white text-gray-700 font-bold rounded-full border-2 border-gray-600">
+                  SignUp
+                </button>
+              </Link>
             </div>
             <div className="flex flex-col justify-between my-5">
               <p>Or</p>
