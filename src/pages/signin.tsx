@@ -20,6 +20,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Email from "next-auth/providers/email";
 
+
 const SignIn = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -76,7 +77,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center">
+    <div className="min-h-screen flex flex-col justify-center items-center slide-in-right">
       <div className="p-6 max-w-sm w-full bg-white  rounded-md">
         <div className="p-4">
           <button

@@ -65,12 +65,12 @@ export default function Index() {
           <div>
             <div className="flex flex-col justify-center items-center ">
               <Link href="/signin">
-                <button className="w-36 py-2 px-4 bg-blue-600 text-white font-bold rounded-full mb-4">
+                <button className="w-44 py-2 px-4 bg-blue-600 text-white font-bold rounded-full mb-4">
                   Login
                 </button>
               </Link>
               <Link href="/signup">
-                <button className="w-36 py-2 px-4 bg-white text-gray-700 font-bold rounded-full border-2 border-gray-600">
+                <button className="w-44 py-2 px-4 bg-white text-gray-700 font-bold rounded-full border-2 border-gray-600">
                   SignUp
                 </button>
               </Link>
