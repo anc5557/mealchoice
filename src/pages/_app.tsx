@@ -59,7 +59,7 @@ const InnerComponent = ({ Component, pageProps }: AppProps) => {
         <title>Meal Choice</title>
         <meta name="description" content="Meal Choice" />
       </Head>
-      <div className="bg-gray-50 min-h-screen">
+      <div className=" border-2 min-h-screen">
         <Component {...pageProps} />
       </div>
       {isLoggedIn && <NavBar />}
