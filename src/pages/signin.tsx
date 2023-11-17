@@ -3,23 +3,11 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  GithubAuthProvider,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-
-import { app, db } from "../firebase/firebasedb";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn } from "../features/userSlice";
 import { RootState } from "../store";
-import { setDoc, doc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
-import Email from "next-auth/providers/email";
-
+import { useAuth } from "../hooks/useAuth";
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -27,6 +15,7 @@ const SignIn = () => {
   const user = useSelector((state: RootState) => state.user.user); // 사용자 정보를 가져옵니다.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { handleSignin } = useAuth();
 
   // 로그인 상태 확인
   useEffect(() => {
@@ -37,43 +26,6 @@ const SignIn = () => {
 
   const goindex = () => {
     router.push("/");
-  };
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-
-  const handleEmailLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const auth = getAuth(app);
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      dispatch(
-        logIn({
-          uid: userCredential.user.uid,
-          email: userCredential.user.email ?? "",
-          displayName: "",
-        })
-      );
-
-      router.push("/home");
-    } catch (error) {
-      if (error instanceof Error) {
-        // 'error'가 'Error' 인스턴스인지 확인
-        console.error(error.name, error.message);
-      } else {
-        console.error("An unknown error occurred");
-      }
-    }
   };
 
   return (
@@ -106,7 +58,7 @@ const SignIn = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
           로그인
         </h2>
-        <form className="space-y-6" onSubmit={handleEmailLogin}>
+        <form className="space-y-6" onSubmit={handleSignin}>
           <div>
             <label
               htmlFor="email"
@@ -120,7 +72,7 @@ const SignIn = () => {
               id="email"
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="이메일을 입력하세요"
-              onChange={handleEmailChange}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div>
@@ -136,7 +88,7 @@ const SignIn = () => {
               id="password"
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="비밀번호를 입력하세요"
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div className="flex items-center justify-end">

@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { logIn } from "../features/userSlice";
 import { db } from "../firebase/firebasedb";
 import { setDoc, doc } from "firebase/firestore";
+import { useAuth } from "../hooks/useAuth";
 
 const SignUp = () => {
   const router = useRouter();
@@ -19,53 +20,9 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [displayName, setdisplayName] = useState("");
   const dispatch = useDispatch();
+  const { handleSignup } = useAuth();
 
-  const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const auth = getAuth(app);
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const newUser = userCredential.user;
-
-      // 사용자 프로필 업데이트
-      await updateProfile(newUser, {
-        displayName: displayName,
-        photoURL: "/default-profile.png",
-      });
-
-      dispatch(
-        logIn({
-          uid: newUser.uid,
-          email: newUser.email ?? "",
-          displayName: newUser.displayName ?? "",
-          profilePic: newUser.photoURL ?? "",
-        })
-      );
-
-      router.push("/home");
-
-      // Firestore에 사용자 정보 저장
-      await setDoc(doc(db, "users", newUser.uid), {
-        uid: newUser.uid,
-        email: newUser.email ?? "",
-        displayName: newUser.displayName ?? "",
-        profilePic: newUser.photoURL ?? "",
-      });
-      
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.name, error.message);
-      } else {
-        console.error("An unknown error occurred during sign up");
-      }
-    }
-  };
-
+  
   const goindex = () => {
     router.push("/");
   };
@@ -96,7 +53,7 @@ const SignUp = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
           회원가입
         </h2>
-        <form className="space-y-6" onSubmit={handleSignUp}>
+        <form className="space-y-6" onSubmit={handleSignup}>
           <div>
             <label
               htmlFor="displayName"
