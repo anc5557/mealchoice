@@ -10,7 +10,7 @@ import '../styles/globals.css';
 import { useFirebaseAuth } from '../hooks/useFirebaseAuth';
 
 const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
-  useFirebaseAuth(); // 사용자 정의 훅 사용
+  useFirebaseAuth(); 
   const user = useSelector((state: { user: any }) => state.user);
   const isLoggedIn = !!user;
 

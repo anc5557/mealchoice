@@ -2,18 +2,14 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
-import { app, db } from "../firebase/firebasedb";
-import { useDispatch, useSelector } from "react-redux";
-import { logIn } from "../features/userSlice";
+import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import { setDoc, doc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
-
+import { useAuth } from "../hooks/useAuth";
 
 export default function Index() {
-  const dispatch = useDispatch();
+  const { handleLogin } = useAuth();
   const router = useRouter();
   const user = useSelector((state: RootState) => state.user.user);
 
@@ -22,27 +18,6 @@ export default function Index() {
       router.push("/home");
     }
   }, [user, router]);
-
-  const handleLogin = async (providerType: string) => {
-    try {
-      const auth = getAuth(app);
-      const provider = providerType === 'google' ? new GoogleAuthProvider() : new GithubAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-
-      const userData = {
-        uid: result.user.uid,
-        email: result.user.email ?? "",
-        displayName: result.user.displayName ?? "",
-        profilePic: result.user.photoURL ?? "",
-      };
-
-      dispatch(logIn(userData));
-      await setDoc(doc(db, "users", userData.uid), userData);
-      router.push("/home");
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center">
@@ -82,7 +57,10 @@ export default function Index() {
               </p>
             </div>
             <div className="flex justify-center space-x-5">
-              <button aria-label="Github login" onClick={() => handleLogin('github')}>
+              <button
+                aria-label="Github login"
+                onClick={() => handleLogin("github")}
+              >
                 <Image
                   src="/github-mark.svg"
                   alt="Github login"
@@ -90,7 +68,10 @@ export default function Index() {
                   height={40}
                 />
               </button>
-              <button aria-label="Google login" onClick={() => handleLogin('google')}>
+              <button
+                aria-label="Google login"
+                onClick={() => handleLogin("google")}
+              >
                 <Image
                   src="/web_light_rd_na.svg"
                   alt="Google Login"
