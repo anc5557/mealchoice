@@ -53,10 +53,16 @@ export const userSlice = createSlice({
         state.user = { ...state.user, ...action.payload };
       }
     },
+
+    updateDisplayName: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.displayName = action.payload;
+      }
+    },
   },
 });
 
-export const { logIn, logOut, updateUserProfile } = userSlice.actions;
+export const { logIn, logOut, updateUserProfile, updateDisplayName } = userSlice.actions;
 
 const persistConfig = {
   key: "user",

@@ -10,13 +10,14 @@ import {
 } from "firebase/auth";
 import { app, db } from "../firebase/firebasedb";
 import { useDispatch } from "react-redux";
-import { logIn } from "../features/userSlice";
+import { logIn, updateDisplayName } from "../features/userSlice";
 import { setDoc, doc } from "firebase/firestore";
 import { useRouter } from "next/router";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+
   const handleLogin = async (providerType: string) => {
     try {
       const auth = getAuth(app);
@@ -136,5 +137,16 @@ export const useAuth = () => {
       }
     }
   };
-  return { handleLogin, handleSignup, handleSignin };
+  
+  const handleEditDisplayName = async (newDisplayName: string) => {
+    const auth = getAuth();
+    if (auth.currentUser) {
+      await updateProfile(auth.currentUser, { displayName: newDisplayName });
+      dispatch(updateDisplayName(newDisplayName));
+    }
+  };
+
+
+
+  return { handleLogin, handleSignup, handleSignin, handleEditDisplayName };
 };
