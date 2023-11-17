@@ -21,7 +21,7 @@ const MyInfoPage = () => {
       <div className="bg-white shadow rounded-lg p-6">
         {user ? (
           <div className="flex items-center space-x-6 mb-4 mt-4">
-            <div className="shrink-0">
+            <div className="relative shrink-0">
               <Image
                 src={user.profilePic || ""}
                 alt="프로필 사진"
@@ -29,10 +29,34 @@ const MyInfoPage = () => {
                 height={100}
                 className="rounded-full"
               />
+              <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300">
+                <span className="text-white text-sm">사진 변경</span>
+              </div>
             </div>
-            <div>
-              <div className="text-2xl font-medium text-gray-800">
-                {user.displayName}
+            <div className="flex flex-col justify-center">
+              <div className="flex items-center">
+                <div className="text-2xl font-medium text-gray-800 mr-2">
+                  {user.displayName}
+                </div>
+                <button
+                  className=" rounded-full hover:bg-gray-200 transition-color"
+                  //onClick={handleEditDisplayName}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
+                    />
+                  </svg>
+                </button>
               </div>
               <div className="text-gray-500 text-sm">{user.email}</div>
             </div>
@@ -40,18 +64,25 @@ const MyInfoPage = () => {
         ) : (
           <div>사용자 정보가 없습니다.</div>
         )}
+        <div className="flex justify-end">
+          <span
+            className="text-red-500 cursor-pointer underline"
+            onClick={handleLogout}
+          >
+            로그아웃
+          </span>
+        </div>
 
-
-        <div className="mt-10">
+        <div className="mt-5 mb-10">
           <label
             htmlFor="exclude-food"
-            className="block mb-2 text-sm font-medium text-gray-900"
+            className="block mb-3 text-lg font-medium text-gray-900"
           >
             최근에 먹은 음식 제외 기간
           </label>
           <select
             id="exclude-food"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-1/3 p-2.5"
           >
             <option value="1">1일</option>
             <option value="3">3일</option>
@@ -59,19 +90,26 @@ const MyInfoPage = () => {
             <option value="14">14일</option>
           </select>
         </div>
-        <div className="mt-6">
-          <Link href="/favorite-food">
-            <span className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-              좋아하는 음식 설정
-            </span>
-          </Link>
+        <div className="mt-6  ">
+          <label
+            htmlFor="exclude-food"
+            className="block mb-3 text-lg font-medium text-gray-900"
+          >
+            음식 설정
+          </label>
+          <div className="flex space-x-3">
+            <Link href="/favorite-food">
+              <span className="px-3 py-2 text-sm  bg-blue-500 text-white rounded hover:bg-blue-600 ">
+                좋아하는 음식
+              </span>
+            </Link>
+            <Link href="/hate-food">
+              <span className="px-3 py-2 text-sm  bg-red-500 text-white rounded hover:bg-red-600">
+                싫어하는 음식
+              </span>
+            </Link>
+          </div>
         </div>
-        <button
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mt-4 focus:outline-none"
-          onClick={handleLogout}
-        >
-          로그아웃
-        </button>
       </div>
     </div>
   );
