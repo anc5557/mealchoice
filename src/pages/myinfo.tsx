@@ -34,7 +34,7 @@ const MyInfoPage = () => {
               </div>
             </div>
             <div className="flex flex-col justify-center">
-              <div className="flex items-center">
+              <div className="flex items-center mb-1">
                 <div className="text-2xl font-medium text-gray-800 mr-2">
                   {user.displayName}
                 </div>
