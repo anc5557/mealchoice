@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import { logOut } from "../features/userSlice";
@@ -6,6 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import router from "next/router";
 import { useAuth } from "../hooks/useAuth";
+import { ProfilePicture } from "../components/ProfilePicture";
+import { DisplayName } from "../components/DisplayName";
 
 const MyInfoPage = () => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -14,124 +16,46 @@ const MyInfoPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [newDisplayName, setNewDisplayName] = useState(user?.displayName || "");
 
-  // 로그아웃 핸들러
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     dispatch(logOut());
     router.push("/");
-  };
+  }, [dispatch]);
 
-  const startEdit = () => {
-    setIsEditing(true);
-  };
-
-  const cancelEdit = () => {
+  const startEdit = useCallback(() => setIsEditing(true), []);
+  const cancelEdit = useCallback(() => {
     setIsEditing(false);
     setNewDisplayName(user?.displayName || "");
-  };
+  }, [user]);
 
-  const confirmEdit = async () => {
+  const confirmEdit = useCallback(async () => {
     await handleEditDisplayName(newDisplayName);
     setIsEditing(false);
-  };
+  }, [handleEditDisplayName, newDisplayName]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await handleEditDisplayName(newDisplayName);
-  };
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      await confirmEdit();
+    },
+    [confirmEdit]
+  );
 
   return (
     <div className="container mx-auto p-4">
       <div className="bg-white shadow rounded-lg p-6">
         {user ? (
           <div className="flex items-center space-x-6 mb-4 mt-4">
-            <div className="relative shrink-0">
-              <Image
-                src={user.profilePic || ""}
-                alt="프로필 사진"
-                width={100}
-                height={100}
-                className="rounded-full"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300">
-                <span className="text-white text-sm">사진 변경</span>
-              </div>
-            </div>
+            <ProfilePicture src={user.profilePic || ""} alt="프로필 사진" />
             <div className="flex flex-col justify-center">
-              <div className="flex items-center mb-1">
-                {!isEditing ? (
-                  <>
-                    <div className="text-2xl font-medium text-gray-800 mr-2">
-                      {user.displayName}
-                    </div>
-                    <button
-                      className="rounded-full hover:bg-gray-200 transition-color"
-                      onClick={startEdit}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-5 h-5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-                        />
-                      </svg>
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <input
-                      type="text"
-                      value={newDisplayName}
-                      onChange={(e) => setNewDisplayName(e.target.value)}
-                      className="text-2xl font-medium text-gray-800 mr-2 w-full max-w-full box-border border border-gray-400 rounded-lg mr-2"
-                    />
-                    <button
-                      className="rounded-full hover:bg-gray-200 transition-color"
-                      onClick={confirmEdit}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6 text-green-500 "
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4.5 12.75l6 6 9-13.5"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      className="rounded-full hover:bg-gray-200 transition-color"
-                      onClick={cancelEdit}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6 text-red-500"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </>
-                )}
-              </div>
+              <DisplayName
+                isEditing={isEditing}
+                name={user.displayName}
+                startEdit={startEdit}
+                newDisplayName={newDisplayName}
+                setNewDisplayName={setNewDisplayName}
+                confirmEdit={confirmEdit}
+                cancelEdit={cancelEdit}
+              />
               <div className="text-gray-500 text-sm">{user.email}</div>
             </div>
           </div>
@@ -146,7 +70,6 @@ const MyInfoPage = () => {
             로그아웃
           </span>
         </div>
-
         <div className="mt-5 mb-10">
           <label
             htmlFor="exclude-food"
