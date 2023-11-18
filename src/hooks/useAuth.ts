@@ -146,7 +146,5 @@ export const useAuth = () => {
     }
   };
 
-
-
   return { handleLogin, handleSignup, handleSignin, handleEditDisplayName };
 };
