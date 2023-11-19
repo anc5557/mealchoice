@@ -31,7 +31,7 @@ const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
 const App = ({ Component, pageProps, router }: AppProps) => {
   return (
     <Provider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <PersistGate persistor={persistor}>
         <InnerComponent Component={Component} pageProps={pageProps} router={router} />
       </PersistGate>
     </Provider>

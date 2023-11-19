@@ -30,6 +30,7 @@ export default function Index() {
               width={200}
               height={200}
               className="mb-3 mx-auto"
+              priority
             />
             <h2 className="text-5xl font-bold mb-6">Hello!</h2>
             <p className="text-gray-600">음식 메뉴 초이스</p>
