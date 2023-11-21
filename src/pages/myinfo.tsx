@@ -8,6 +8,7 @@ import router from "next/router";
 import { useAuth } from "../hooks/useAuth";
 import { ProfilePicture } from "../components/ProfilePicture";
 import { DisplayName } from "../components/DisplayName";
+import withAuth from "@/hooks/withAuth";
 
 const MyInfoPage = () => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -112,4 +113,4 @@ const MyInfoPage = () => {
   );
 };
 
-export default MyInfoPage;
+export default withAuth(MyInfoPage);

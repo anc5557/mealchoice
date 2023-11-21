@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import FoodCategory from "@/components/FoodCategory";
 import FoodCard from "@/components/FoodCard";
+import withAuth from "@/hooks/withAuth";
 
-export default function Home() {
+const Home= () => {
   return (
     <div className="flex flex-col justify-center items-center h-screen">
       <h1>홈 페이지</h1>
@@ -13,3 +14,6 @@ export default function Home() {
     </div>
   );
 }
+
+
+export default withAuth(Home);

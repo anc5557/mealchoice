@@ -8,6 +8,7 @@ import { RootState } from "../store";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "../hooks/useAuth";
+import withAuth from "@/hooks/withAuth";
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -124,4 +125,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default withAuth(SignIn, false);

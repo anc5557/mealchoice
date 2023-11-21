@@ -7,8 +7,9 @@ import { RootState } from "../store";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "../hooks/useAuth";
+import withAuth from "@/hooks/withAuth";
 
-export default function Index() {
+const Index = () => {
   const { handleLogin } = useAuth();
   const router = useRouter();
   const user = useSelector((state: RootState) => state.user.user);
@@ -87,3 +88,5 @@ export default function Index() {
     </div>
   );
 }
+
+export default withAuth(Index, false);

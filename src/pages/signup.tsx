@@ -2,17 +2,9 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-} from "firebase/auth";
-import { app } from "../firebase/firebasedb";
 import { useDispatch } from "react-redux";
-import { logIn } from "../features/userSlice";
-import { db } from "../firebase/firebasedb";
-import { setDoc, doc } from "firebase/firestore";
 import { useAuth } from "../hooks/useAuth";
+import withAuth from "@/hooks/withAuth";
 
 const SignUp = () => {
   const router = useRouter();
@@ -124,4 +116,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default withAuth(SignUp, false);
