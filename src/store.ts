@@ -1,16 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import sessionStorage from "redux-persist/lib/storage/session";
 import userReducer from "./features/userSlice";
+import foodReducer from "./features/foodSlice";
 import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
   user: userReducer,
+  food: foodReducer,
 });
 
 const persistConfig = {
   key: "root",
-  storage,
+  storage: sessionStorage,
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -2,7 +2,7 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import sessionStorage from "redux-persist/lib/storage/session";
 
 interface UserState {
   isLoggedIn: boolean;
@@ -66,7 +66,7 @@ export const { logIn, logOut, updateUserProfile, updateDisplayName } = userSlice
 
 const persistConfig = {
   key: "user",
-  storage,
+  storage : sessionStorage,
 };
 
 const persistedReducer = persistReducer(persistConfig, userSlice.reducer);
