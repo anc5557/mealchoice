@@ -13,10 +13,12 @@ import { useDispatch } from "react-redux";
 import { logIn, updateDisplayName } from "../features/userSlice";
 import { setDoc, doc } from "firebase/firestore";
 import { useRouter } from "next/router";
+import { useFood } from "./useFood";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { getExclusionPeriod } = useFood();
 
   const handleLogin = async (providerType: string) => {
     try {
@@ -32,13 +34,14 @@ export const useAuth = () => {
           uid: result.user.uid,
           email: result.user.email ?? "",
           displayName: result.user.displayName ?? "",
-          profilePic: result.user.photoURL ?? undefined,
+          photoURL: result.user.photoURL ?? undefined,
         };
 
         dispatch(logIn(userData));
 
         // Firestore에 사용자 데이터 저장
-        await setDoc(doc(db, "users", userData.uid), userData);
+        await setDoc(doc(db, "users", userData.uid), userData); // users 컬렉션에 사용자 데이터 저장 (uid를 문서 이름으로 사용) 
+        await getExclusionPeriod(userData.uid); // 사용자 uid를 인수로 전달하여 getExclusionPeriod() 호출
 
         router.push("/home");
       }
@@ -69,13 +72,13 @@ export const useAuth = () => {
       const user = userCredential.user;
 
       // 프로필 사진에 기본값 설정
-      const defaultProfilePic = "/default-profile.png";
+      const defaultphotoURL = "/default-profile.png";
 
       // Redux 스토어에 사용자 정보 저장
       if (user) {
         await updateProfile(user, {
           displayName: displayName,
-          photoURL: defaultProfilePic,
+          photoURL: defaultphotoURL,
         });
 
         // Firestore에 사용자 데이터 저장
@@ -83,7 +86,7 @@ export const useAuth = () => {
           uid: user.uid,
           email: user.email ?? "",
           displayName: displayName,
-          profilePic: user.photoURL ?? defaultProfilePic,
+          photoURL: user.photoURL ?? defaultphotoURL,
         });
       }
 
@@ -121,7 +124,7 @@ export const useAuth = () => {
             uid: user.uid,
             email: user.email ?? "",
             displayName: user.displayName ?? "",
-            profilePic: user.photoURL ?? "",
+            photoURL: user.photoURL ?? "",
           })
         );
 
@@ -148,3 +151,5 @@ export const useAuth = () => {
 
   return { handleLogin, handleSignup, handleSignin, handleEditDisplayName };
 };
+
+export default useAuth;

@@ -10,7 +10,7 @@ interface UserState {
     uid: string;
     email: string;
     displayName: string;
-    profilePic?: string;
+    photoURL?: string;
   } | null;
 }
 
@@ -29,7 +29,7 @@ export const userSlice = createSlice({
         uid: string;
         email: string;
         displayName: string;
-        profilePic?: string;
+        photoURL?: string;
       }>
     ) => {
       // `user` 객체가 null이 아닐 때만 상태를 업데이트
@@ -39,7 +39,7 @@ export const userSlice = createSlice({
           uid: action.payload.uid,
           email: action.payload.email,
           displayName: action.payload.displayName,
-          profilePic: action.payload.profilePic || "",
+          photoURL: action.payload.photoURL || "",
         };
       }
     },

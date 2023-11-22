@@ -9,6 +9,7 @@ import { useAuth } from "../hooks/useAuth";
 import { ProfilePicture } from "../components/ProfilePicture";
 import { DisplayName } from "../components/DisplayName";
 import withAuth from "@/hooks/withAuth";
+import { useFood } from "@/hooks/useFood";
 
 const MyInfoPage = () => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -41,12 +42,21 @@ const MyInfoPage = () => {
     [confirmEdit]
   );
 
+  const { updateExclusionPeriod } = useFood();
+
+  const handleExclusionPeriodChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const days = parseInt(event.target.value, 10);
+    if (user && days) {
+      await updateExclusionPeriod(user.uid, days);
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="bg-white shadow rounded-lg p-6">
         {user ? (
           <div className="flex items-center space-x-6 mb-4 mt-4">
-            <ProfilePicture src={user.profilePic || ""} alt="프로필 사진" />
+            <ProfilePicture src={user.photoURL || ""} alt="프로필 사진" />
             <div className="flex flex-col justify-center">
               <DisplayName
                 isEditing={isEditing}
@@ -81,6 +91,7 @@ const MyInfoPage = () => {
           <select
             id="exclude-food"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-1/3 p-2.5"
+            onChange={handleExclusionPeriodChange}
           >
             <option value="1">1일</option>
             <option value="3">3일</option>
