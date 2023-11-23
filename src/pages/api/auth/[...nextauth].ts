@@ -1,4 +1,4 @@
-// path : mealchoice/src/pages/apis/auth/[...nextauth].ts
+// path : mealchoice/src/pages/api/auth/[...nextauth].ts
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import  GithubAuthProvider from "next-auth/providers/github";

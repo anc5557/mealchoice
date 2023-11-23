@@ -10,7 +10,7 @@ import { useAuth } from "../hooks/useAuth";
 import withAuth from "@/hooks/withAuth";
 
 const Index = () => {
-  const { handleLogin } = useAuth();
+  const { handleSocialLogin } = useAuth();
   const router = useRouter();
   const user = useSelector((state: RootState) => state.user.user);
 
@@ -61,7 +61,7 @@ const Index = () => {
             <div className="flex justify-center space-x-5">
               <button
                 aria-label="Github login"
-                onClick={() => handleLogin("github")}
+                onClick={() => handleSocialLogin("github")}
               >
                 <Image
                   src="/github-mark.svg"
@@ -72,7 +72,7 @@ const Index = () => {
               </button>
               <button
                 aria-label="Google login"
-                onClick={() => handleLogin("google")}
+                onClick={() => handleSocialLogin("google")}
               >
                 <Image
                   src="/web_light_rd_na.svg"

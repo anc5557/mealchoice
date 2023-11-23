@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
-import { logOut } from "../features/userSlice";
+import { LogoutSuccess } from "../features/userSlice";
 import Image from "next/image";
 import Link from "next/link";
 import router from "next/router";
@@ -19,7 +19,7 @@ const MyInfoPage = () => {
   const [newDisplayName, setNewDisplayName] = useState(user?.displayName || "");
 
   const handleLogout = useCallback(() => {
-    dispatch(logOut());
+    dispatch(LogoutSuccess());
     router.push("/");
   }, [dispatch]);
 

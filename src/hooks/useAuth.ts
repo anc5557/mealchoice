@@ -1,155 +1,279 @@
 // hooks/useAuth.ts
 import {
-  getAuth,
   signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { app, db } from "../firebase/firebasedb";
 import { useDispatch } from "react-redux";
-import { logIn, updateDisplayName } from "../features/userSlice";
-import { setDoc, doc } from "firebase/firestore";
+import { LoginSuccess } from "../features/userSlice";
 import { useRouter } from "next/router";
-import { useFood } from "./useFood";
+import { setCookie } from "nookies";
+import { auth, db } from "../firebase/firebasedb";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { FIREBASE_ERRORS } from "@/firebase/errors";
+import axios from "axios";
+
+
+// 유저, 토큰, 음식 타입 정의
+interface Data {
+  user: {
+    uid: string;
+    email: string;
+    displayName: string;
+    profilePic: string;
+  };
+  token: string;
+  food: {
+    exclusionPeriod: number;
+    hate: string[];
+    like: string[];
+  };
+}
+
+interface FirebaseError extends Error {
+  code: keyof typeof FIREBASE_ERRORS;
+}
+
+// 소셜 로그인 타입 정의
+type ProviderType = "google" | "github";
+
+// 초기화
+const providerMap: {
+  [key in ProviderType]: GoogleAuthProvider | GithubAuthProvider;
+} = {
+  google: new GoogleAuthProvider(),
+  github: new GithubAuthProvider(),
+};
 
 export const useAuth = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { getExclusionPeriod } = useFood();
 
-  const handleLogin = async (providerType: string) => {
+  // 음식 데이터 가져오기 
+  // 데이터가 없으면 db에 기본값으로 저장
+  const getsetFoodData = async (uid: string): Promise<Data["food"]> => {
+    const foodsRef = doc(db, "users", uid, "foods", "preferences");
+    const foodsSnap = await getDoc(foodsRef);
+  
+    if (foodsSnap.exists()) {
+      return foodsSnap.data() as Data["food"]; // 적절한 타입 캐스팅
+    } else {
+      // 기본 음식 데이터
+      const defaultFoodData: Data["food"] = {
+        exclusionPeriod: 1,
+        hate: [],
+        like: [],
+      };
+      await setDoc(foodsRef, defaultFoodData);
+      return defaultFoodData; // 기본값을 반환
+    }
+  };
+  
+  
+    
+  // 회원가입, 로그인, 소셜 로그인 실패시 실행되는 함수
+  const handleError = (error: any) => {
+    console.error("An error occurred:", error.message || error.toString());
+  };
+
+  // 소셜로그인
+  const handleSocialLogin = async (providerType: ProviderType) => {
+    const provider = providerMap[providerType];
+
+    if (!provider) {
+      console.error("Unsupported social login method.");
+      return;
+    }
+
     try {
-      const auth = getAuth(app);
-      const provider =
-        providerType === "google"
-          ? new GoogleAuthProvider()
-          : new GithubAuthProvider();
       const result = await signInWithPopup(auth, provider);
 
-      if (result.user) {
-        const userData = {
-          uid: result.user.uid,
-          email: result.user.email ?? "",
-          displayName: result.user.displayName ?? "",
-          photoURL: result.user.photoURL ?? undefined,
-        };
+      // user 정보
+      const user = {
+        uid: result.user.uid,
+        email: result.user.email ?? "",
+        displayName: result.user.displayName ?? "",
+        profilePic: result.user.photoURL ?? "",
+      };
 
-        dispatch(logIn(userData));
+      // token 정보
+      const token = await result.user.getIdToken();
 
-        // Firestore에 사용자 데이터 저장
-        await setDoc(doc(db, "users", userData.uid), userData); // users 컬렉션에 사용자 데이터 저장 (uid를 문서 이름으로 사용) 
-        await getExclusionPeriod(userData.uid); // 사용자 uid를 인수로 전달하여 getExclusionPeriod() 호출
+      // food 정보
+      const food = await getsetFoodData(result.user.uid);
 
-        router.push("/home");
-      }
+      // 쿠키에 토큰 저장
+      setCookie(null, "access_token", token, {
+        maxAge: 3600,
+        httpOnly: true,
+        path: "/",
+      });
+
+      dispatch(
+        LoginSuccess({
+          isLoggedIn: true,
+          user,
+          food,
+          token,
+        })
+      );
+
+      router.push("/home");
     } catch (error) {
-      // 에러 핸들링
-      console.error("Authentication error:", error);
+      console.error("Social login error:", error);
     }
   };
 
-  const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
+  // email 로그인
+  const handleEmailLogin = async (email: string, password: string) => {
     try {
-      event.preventDefault();
-      const target = event.target as typeof event.target & {
-        displayName: { value: string };
-        email: { value: string };
-        password: { value: string };
-      };
-      const displayName = target.displayName.value;
-      const email = target.email.value;
-      const password = target.password.value;
+      const result = await signInWithEmailAndPassword(auth, email, password);
 
-      const auth = getAuth(app);
+      // user 정보
+      const user = {
+        uid: result.user.uid,
+        email: result.user.email ?? "",
+        displayName: result.user.displayName ?? "",
+        profilePic: result.user.photoURL ?? "",
+      };
+
+      // token 정보
+      const token = await result.user.getIdToken();
+
+      // food 정보
+      const food = await getsetFoodData(result.user.uid);
+
+      // 쿠키에 토큰 저장
+      setCookie(null, "access_token", token, {
+        maxAge: 3600,
+        httpOnly: true,
+        path: "/",
+      });
+
+      dispatch(
+        LoginSuccess({
+          isLoggedIn: true,
+          user,
+          food,
+          token,
+        })
+      );
+
+      router.push("/home");
+    } catch (error) {
+      if (typeof error === "object" && error !== null && "code" in error) {
+        const firebaseError = error as FirebaseError;
+        const errorMessage =
+          FIREBASE_ERRORS[firebaseError.code] ||
+          "로그인 처리 중 오류가 발생했습니다.";
+        handleError(errorMessage);
+      } else {
+        handleError("로그인 처리 중 오류가 발생했습니다.");
+      }
+    }
+  };
+
+  // email 회원가입
+  // 회원가입만, DB에 저장만 하고 로그인은 안함
+  const handleEmailSignup = async (
+    email: string,
+    password: string,
+    name: string
+  ) => {
+    try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      const user = userCredential.user;
 
-      // 프로필 사진에 기본값 설정
-      const defaultphotoURL = "/default-profile.png";
+      // 이름과 기본 프로필 사진으로 프로필 업데이트
+      await updateProfile(userCredential.user, {
+        displayName: name,
+        photoURL: "/default-profile.png",
+      });
 
-      // Redux 스토어에 사용자 정보 저장
-      if (user) {
-        await updateProfile(user, {
-          displayName: displayName,
-          photoURL: defaultphotoURL,
-        });
-
-        // Firestore에 사용자 데이터 저장
-        await setDoc(doc(db, "users", user.uid), {
-          uid: user.uid,
-          email: user.email ?? "",
-          displayName: displayName,
-          photoURL: user.photoURL ?? defaultphotoURL,
-        });
-      }
-
-      router.push("/signin");
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.name, error.message);
-      } else {
-        console.error("An unknown error occurred during sign up");
-      }
-    }
-  };
-
-  const handleSignin = async (event: React.FormEvent<HTMLFormElement>) => {
-    try {
-      event.preventDefault();
-      const target = event.target as typeof event.target & {
-        email: { value: string };
-        password: { value: string };
-      };
-      const email = target.email.value;
-      const password = target.password.value;
-      const auth = getAuth(app);
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
+      // users 컬렉션에 사용자 문서 생성
+      const userRef = doc(db, "users", userCredential.user.uid);
+      await setDoc(userRef, {
+        uid: userCredential.user.uid,
         email,
-        password
+        name,
+        profilePic: "/default-profile.png",
+      });
+
+      // 해당 사용자의 foods 하위 컬렉션에 문서 생성
+      const foodsRef = doc(
+        db,
+        "users",
+        userCredential.user.uid,
+        "foods",
+        "preferences"
       );
-      const user = userCredential.user;
+      await setDoc(foodsRef, {
+        ExclusionPeriod: 1,
+        hate: [],
+        like: [],
+      });
 
-      // Redux 스토어에 사용자 정보 저장
-      if (user) {
-        dispatch(
-          logIn({
-            uid: user.uid,
-            email: user.email ?? "",
-            displayName: user.displayName ?? "",
-            photoURL: user.photoURL ?? "",
-          })
-        );
 
-        // 로그인 성공 후 리디렉션 (예: 홈페이지나 대시보드 등)
-        router.push("/home");
+      router.push("/sigin");
+    } catch (error) {
+      if (typeof error === "object" && error !== null && "code" in error) {
+        const firebaseError = error as FirebaseError;
+        const errorMessage =
+          FIREBASE_ERRORS[firebaseError.code] ||
+          "회원가입 처리 중 오류가 발생했습니다.";
+        handleError(errorMessage);
+      } else {
+        handleError("회원가입 처리 중 오류가 발생했습니다.");
+      }
+    }
+  };
+
+  // displayName 변경 함수
+  // API 라우트 사용, axios 사용
+  // 입력 : displayName, token
+  // 출력 : 성공 메시지
+  const handleEditDisplayName  = async (displayName: string, token: string) => {
+    try {
+      const response = await axios.post(
+        "/api/auth/myinfo/editDisplayName",
+        { displayName },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        throw new Error("사용자 정보 변경에 실패했습니다.");
       }
     } catch (error) {
-      if (error instanceof Error) {
-        // 'error'가 'Error' 인스턴스인지 확인
-        console.error(error.name, error.message);
+      if (typeof error === "object" && error !== null && "code" in error) {
+        const firebaseError = error as FirebaseError;
+        const errorMessage =
+          FIREBASE_ERRORS[firebaseError.code] ||
+          "사용자 정보 변경에 실패했습니다.";
+        handleError(errorMessage);
       } else {
-        console.error("An unknown error occurred");
+        handleError("사용자 정보 변경에 실패했습니다.");
       }
     }
   };
-  
-  const handleEditDisplayName = async (newDisplayName: string) => {
-    const auth = getAuth();
-    if (auth.currentUser) {
-      await updateProfile(auth.currentUser, { displayName: newDisplayName });
-      dispatch(updateDisplayName(newDisplayName));
-    }
-  };
 
-  return { handleLogin, handleSignup, handleSignin, handleEditDisplayName };
+  return {
+    handleSocialLogin,
+    handleEmailLogin,
+    handleEmailSignup,
+    handleEditDisplayName,
+  };
 };
 
 export default useAuth;

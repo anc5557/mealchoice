@@ -1,5 +1,3 @@
-// src/context/authProvoider.ts
-
 import React, { useState, useEffect, useContext, createContext, useMemo } from 'react';
 import { getAuth, User } from 'firebase/auth';
 import nookies from 'nookies';
@@ -19,12 +17,11 @@ export const AuthProvider = ({ children }: any) => {
         nookies.set(null, 'token', '', { path: '/' });
         return;
       }
-	  
-      // 토큰 쿠키를 설정한다. 
-      setUserState(user);
-      const token = await user.getIdToken();
-      nookies.destroy(null, 'token');
-      nookies.set(null, 'token', token, { path: '/' });
+
+      setUserState(user); // 사용자 정보 저장
+      const token = await user.getIdToken(); // ID토큰 가져오기 
+      nookies.destroy(null, 'token'); // 이전 토큰 제거
+      nookies.set(null, 'token', token, { path: '/' }); // 새 토큰 설정
     });
   }, []);
 

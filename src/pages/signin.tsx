@@ -16,7 +16,7 @@ const SignIn = () => {
   const user = useSelector((state: RootState) => state.user.user); // 사용자 정보를 가져옵니다.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { handleSignin } = useAuth();
+  const { handleEmailLogin } = useAuth();
 
   // 로그인 상태 확인
   useEffect(() => {
@@ -59,7 +59,13 @@ const SignIn = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
           로그인
         </h2>
-        <form className="space-y-6" onSubmit={handleSignin}>
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleEmailLogin(email, password);
+          }}
+        >
           <div>
             <label
               htmlFor="email"

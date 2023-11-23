@@ -2,7 +2,6 @@
 
 import { db } from "../firebase/firebasedb";
 import { useDispatch } from "react-redux";
-import { setExclusionPeriod } from "../features/foodSlice";
 import { getDoc, doc } from "firebase/firestore";
 import { updateDoc } from "firebase/firestore";
 
@@ -15,10 +14,6 @@ export const useFood = () => {
     const userDocSnap = await getDoc(userDocRef); // 문서 스냅샷 가져오기
     const userDocData = userDocSnap.data(); // 문서 데이터 가져오기
 
-    if (userDocData) {
-      dispatch(setExclusionPeriod(userDocData.exclusionPeriod));
-    }
-
     return userDocData?.exclusionPeriod ?? [];
   };
 
@@ -29,8 +24,6 @@ export const useFood = () => {
       await updateDoc(userDocRef, {
         exclusionPeriod: days
       });
-      // 리덕스 스토어에도 상태를 업데이트합니다.
-      dispatch(setExclusionPeriod(days));
     } catch (error) {
       console.error("Error updating exclusion period: ", error);
     }

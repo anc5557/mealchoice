@@ -12,9 +12,8 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [displayName, setdisplayName] = useState("");
   const dispatch = useDispatch();
-  const { handleSignup } = useAuth();
+  const { handleEmailSignup } = useAuth();
 
-  
   const goindex = () => {
     router.push("/");
   };
@@ -45,7 +44,13 @@ const SignUp = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
           회원가입
         </h2>
-        <form className="space-y-6" onSubmit={handleSignup}>
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleEmailSignup(email, password, displayName);
+          }}
+        >
           <div>
             <label
               htmlFor="displayName"
