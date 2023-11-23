@@ -8,14 +8,13 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { LoginSuccess } from "../features/userSlice";
+import { LoginSuccess, EditDisplayName } from "../features/userSlice";
 import { useRouter } from "next/router";
 import { setCookie } from "nookies";
 import { auth, db } from "../firebase/firebasedb";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
 import axios from "axios";
-
 
 // 유저, 토큰, 음식 타입 정의
 interface Data {
@@ -52,28 +51,26 @@ export const useAuth = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // 음식 데이터 가져오기 
-  // 데이터가 없으면 db에 기본값으로 저장
+  // 음식 데이터 가져오기 및 설정
   const getsetFoodData = async (uid: string): Promise<Data["food"]> => {
-    const foodsRef = doc(db, "users", uid, "foods", "preferences");
+    // 문서 참조 생성 (users/{uid}/foods/{uid})
+    const foodsRef = doc(db, "users", uid, "foods", uid);
+
     const foodsSnap = await getDoc(foodsRef);
-  
-    if (foodsSnap.exists()) {
-      return foodsSnap.data() as Data["food"]; // 적절한 타입 캐스팅
-    } else {
+
+    if (!foodsSnap.exists()) {
       // 기본 음식 데이터
       const defaultFoodData: Data["food"] = {
         exclusionPeriod: 1,
         hate: [],
         like: [],
       };
-      await setDoc(foodsRef, defaultFoodData);
-      return defaultFoodData; // 기본값을 반환
+      await setDoc(foodsRef, defaultFoodData); // 문서가 없으면 기본 데이터로 문서 생성
     }
+
+    return (await getDoc(foodsRef)).data() as Data["food"]; // 기존 또는 새로 생성된 문서의 데이터 반환
   };
-  
-  
-    
+
   // 회원가입, 로그인, 소셜 로그인 실패시 실행되는 함수
   const handleError = (error: any) => {
     console.error("An error occurred:", error.message || error.toString());
@@ -90,6 +87,7 @@ export const useAuth = () => {
 
     try {
       const result = await signInWithPopup(auth, provider);
+      console.log(result);
 
       // user 정보
       const user = {
@@ -99,18 +97,28 @@ export const useAuth = () => {
         profilePic: result.user.photoURL ?? "",
       };
 
+      // Firestore에 사용자 정보 저장
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(
+        userRef,
+        {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          profilePic: user.profilePic,
+        },
+        { merge: true }
+      );
+
       // token 정보
       const token = await result.user.getIdToken();
+      console.log(token);
 
       // food 정보
       const food = await getsetFoodData(result.user.uid);
+      console.log(food);
 
-      // 쿠키에 토큰 저장
-      setCookie(null, "access_token", token, {
-        maxAge: 3600,
-        httpOnly: true,
-        path: "/",
-      });
+      await axios.post('/api/auth/setToken', { token });
 
       dispatch(
         LoginSuccess({
@@ -140,6 +148,19 @@ export const useAuth = () => {
         profilePic: result.user.photoURL ?? "",
       };
 
+      // Firestore에 사용자 정보 저장
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(
+        userRef,
+        {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          profilePic: user.profilePic,
+        },
+        { merge: true }
+      ); // 기존 문서가 있으면 업데이트
+
       // token 정보
       const token = await result.user.getIdToken();
 
@@ -147,11 +168,7 @@ export const useAuth = () => {
       const food = await getsetFoodData(result.user.uid);
 
       // 쿠키에 토큰 저장
-      setCookie(null, "access_token", token, {
-        maxAge: 3600,
-        httpOnly: true,
-        path: "/",
-      });
+      await axios.post('/api/auth/setToken', { token });
 
       dispatch(
         LoginSuccess({
@@ -219,7 +236,6 @@ export const useAuth = () => {
         like: [],
       });
 
-
       router.push("/sigin");
     } catch (error) {
       if (typeof error === "object" && error !== null && "code" in error) {
@@ -238,19 +254,23 @@ export const useAuth = () => {
   // API 라우트 사용, axios 사용
   // 입력 : displayName, token
   // 출력 : 성공 메시지
-  const handleEditDisplayName  = async (displayName: string, token: string) => {
+  const handleEditDisplayName = async (displayName: string, token: string) => {
     try {
       const response = await axios.post(
-        "/api/auth/myinfo/editDisplayName",
+        "/api/auth/editDisplayName",
         { displayName },
         {
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
 
       if (response.status === 200) {
+        // 리덕스 스토어에 저장된 사용자 정보 업데이트
+        dispatch(EditDisplayName(displayName));
+
         return response.data;
       } else {
         throw new Error("사용자 정보 변경에 실패했습니다.");

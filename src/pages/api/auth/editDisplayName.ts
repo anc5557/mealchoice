@@ -1,10 +1,10 @@
-// path : mealchoice/src/pages/api/auth/myinfo/editDisplayName.ts
+// path : mealchoice/src/pages/api/auth/editDisplayName.ts
 // 입력값 : 토근, 닉네임
 // 출력값 : 성공 여부
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
-import admin from "firebase-admin";
+import { admin } from '@/firebase/firebaseAdmin';
 
 interface FirebaseError extends Error {
   code: keyof typeof FIREBASE_ERRORS;

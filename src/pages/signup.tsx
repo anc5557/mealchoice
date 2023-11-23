@@ -11,7 +11,6 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setdisplayName] = useState("");
-  const dispatch = useDispatch();
   const { handleEmailSignup } = useAuth();
 
   const goindex = () => {

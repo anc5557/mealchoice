@@ -51,10 +51,13 @@ export const userSlice = createSlice({
       };
       state.token = "";
     },
+    EditDisplayName: (state, action: PayloadAction<string>) => {
+      state.user!.displayName = action.payload; // user가 null이 아닐 때만 작동
+    }
   },
 });
 
-export const {LoginSuccess, LogoutSuccess } = userSlice.actions;
+export const {LoginSuccess, LogoutSuccess, EditDisplayName } = userSlice.actions;
 
 const persistConfig = {
   key: "user",

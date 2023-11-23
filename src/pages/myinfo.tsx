@@ -11,8 +11,10 @@ import { DisplayName } from "../components/DisplayName";
 import withAuth from "@/hooks/withAuth";
 import { useFood } from "@/hooks/useFood";
 
+
 const MyInfoPage = () => {
   const user = useSelector((state: RootState) => state.user.user);
+  const token = useSelector((state: RootState) => state.user.token);
   const dispatch = useDispatch();
   const { handleEditDisplayName } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -30,9 +32,17 @@ const MyInfoPage = () => {
   }, [user]);
 
   const confirmEdit = useCallback(async () => {
-    await handleEditDisplayName(newDisplayName);
-    setIsEditing(false);
-  }, [handleEditDisplayName, newDisplayName]);
+    if (token) {
+      const response = await handleEditDisplayName(newDisplayName, token);
+      if (response.success) {
+        setIsEditing(false);
+      } else {
+        alert(response.message || "이름 변경에 실패했습니다.");
+      }
+    } else {
+      alert("로그인이 필요합니다.");
+    }
+  }, [token, newDisplayName, handleEditDisplayName]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -44,7 +54,9 @@ const MyInfoPage = () => {
 
   const { updateExclusionPeriod } = useFood();
 
-  const handleExclusionPeriodChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleExclusionPeriodChange = async (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const days = parseInt(event.target.value, 10);
     if (user && days) {
       await updateExclusionPeriod(user.uid, days);
