@@ -15,7 +15,7 @@ export const useFirebaseAuth = () => {
             uid: firebaseUser.uid,
             email: firebaseUser.email,
             displayName: firebaseUser.displayName,
-            profilePic: firebaseUser.photoURL,
+            photoURL: firebaseUser.photoURL,
           };
           dispatch({ type: "LOGIN", payload: user });
       } else {

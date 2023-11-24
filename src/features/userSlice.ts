@@ -17,7 +17,6 @@ interface UserState {
     hate: string[];
     like: string[];
   };
-  token: string;
 }
 
 const initialState: UserState = {
@@ -28,7 +27,6 @@ const initialState: UserState = {
     hate: [],
     like: [],
   },
-  token: "",
 };
 
 export const userSlice = createSlice({
@@ -39,7 +37,6 @@ export const userSlice = createSlice({
       state.isLoggedIn = action.payload.isLoggedIn;
       state.user = action.payload.user;
       state.food = action.payload.food;
-      state.token = action.payload.token;
     },
     LogoutSuccess: (state) => {
       state.isLoggedIn = false;
@@ -49,15 +46,19 @@ export const userSlice = createSlice({
         hate: [],
         like: [],
       };
-      state.token = "";
     },
     EditDisplayName: (state, action: PayloadAction<string>) => {
       state.user!.displayName = action.payload; // user가 null이 아닐 때만 작동
-    }
+    },
+
+    // 제외 기간 설정
+    setExclusionPeriod: (state, action: PayloadAction<number>) => {
+      state.food.exclusionPeriod = action.payload;
+    },
   },
 });
 
-export const {LoginSuccess, LogoutSuccess, EditDisplayName } = userSlice.actions;
+export const {LoginSuccess, LogoutSuccess, EditDisplayName, setExclusionPeriod } = userSlice.actions;
 
 const persistConfig = {
   key: "user",

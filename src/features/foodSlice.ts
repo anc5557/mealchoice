@@ -8,15 +8,12 @@ import sessionStorage from "redux-persist/lib/storage/session";
 interface FoodState {
   category: string;
   time: string;
-  exclusionperiod: number;
 }
 
 // Define the initial state using that type
 const initialState: FoodState = {
   category: '한식',
   time: '점심', 
-  exclusionperiod: 1, 
-
 };
 
 export const foodSlice = createSlice({
@@ -31,15 +28,11 @@ export const foodSlice = createSlice({
     setTime: (state, action: PayloadAction<string>) => {
       state.time = action.payload;
     },
-    // 제외기간 설정
-    setExclusionPeriod: (state, action: PayloadAction<number>) => {
-      state.exclusionperiod = action.payload;
-    }
   },
 });
 
 // Export the actions
-export const { setCategory, setTime, setExclusionPeriod} = foodSlice.actions;
+export const { setCategory, setTime} = foodSlice.actions;
 
 const persistConfig = {
     key: "food",

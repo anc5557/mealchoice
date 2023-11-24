@@ -10,7 +10,6 @@ import {
 import { useDispatch } from "react-redux";
 import { LoginSuccess, EditDisplayName } from "../features/userSlice";
 import { useRouter } from "next/router";
-import { setCookie } from "nookies";
 import { auth, db } from "../firebase/firebasedb";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
@@ -22,7 +21,7 @@ interface Data {
     uid: string;
     email: string;
     displayName: string;
-    profilePic: string;
+    photoURL: string;
   };
   token: string;
   food: {
@@ -46,6 +45,7 @@ const providerMap: {
   google: new GoogleAuthProvider(),
   github: new GithubAuthProvider(),
 };
+
 
 export const useAuth = () => {
   const dispatch = useDispatch();
@@ -87,14 +87,13 @@ export const useAuth = () => {
 
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log(result);
 
       // user 정보
       const user = {
         uid: result.user.uid,
         email: result.user.email ?? "",
         displayName: result.user.displayName ?? "",
-        profilePic: result.user.photoURL ?? "",
+        photoURL: result.user.photoURL ?? "",
       };
 
       // Firestore에 사용자 정보 저장
@@ -105,19 +104,18 @@ export const useAuth = () => {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
-          profilePic: user.profilePic,
+          photoURL: user.photoURL,
         },
         { merge: true }
       );
 
       // token 정보
       const token = await result.user.getIdToken();
-      console.log(token);
 
       // food 정보
       const food = await getsetFoodData(result.user.uid);
-      console.log(food);
 
+      // 쿠키에 토큰 저장
       await axios.post('/api/auth/setToken', { token });
 
       dispatch(
@@ -125,7 +123,6 @@ export const useAuth = () => {
           isLoggedIn: true,
           user,
           food,
-          token,
         })
       );
 
@@ -145,7 +142,7 @@ export const useAuth = () => {
         uid: result.user.uid,
         email: result.user.email ?? "",
         displayName: result.user.displayName ?? "",
-        profilePic: result.user.photoURL ?? "",
+        photoURL: result.user.photoURL ?? "",
       };
 
       // Firestore에 사용자 정보 저장
@@ -156,7 +153,7 @@ export const useAuth = () => {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
-          profilePic: user.profilePic,
+          photoURL: user.photoURL,
         },
         { merge: true }
       ); // 기존 문서가 있으면 업데이트
@@ -175,7 +172,6 @@ export const useAuth = () => {
           isLoggedIn: true,
           user,
           food,
-          token,
         })
       );
 
@@ -219,7 +215,7 @@ export const useAuth = () => {
         uid: userCredential.user.uid,
         email,
         name,
-        profilePic: "/default-profile.png",
+        photoURL: "/default-profile.png",
       });
 
       // 해당 사용자의 foods 하위 컬렉션에 문서 생성
@@ -252,24 +248,19 @@ export const useAuth = () => {
 
   // displayName 변경 함수
   // API 라우트 사용, axios 사용
-  // 입력 : displayName, token
+  // 입력 : displayName, 쿠키 
   // 출력 : 성공 메시지
-  const handleEditDisplayName = async (displayName: string, token: string) => {
+  const handleEditDisplayName = async (newDisplayName: string) => {
     try {
       const response = await axios.post(
         "/api/auth/editDisplayName",
-        { displayName },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { newDisplayName },
+        { withCredentials: true },
       );
 
       if (response.status === 200) {
         // 리덕스 스토어에 저장된 사용자 정보 업데이트
-        dispatch(EditDisplayName(displayName));
+        dispatch(EditDisplayName(newDisplayName));
 
         return response.data;
       } else {

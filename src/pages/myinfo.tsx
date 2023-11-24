@@ -10,39 +10,40 @@ import { ProfilePicture } from "../components/ProfilePicture";
 import { DisplayName } from "../components/DisplayName";
 import withAuth from "@/hooks/withAuth";
 import { useFood } from "@/hooks/useFood";
-
+import  { parseCookies } from "nookies";
 
 const MyInfoPage = () => {
   const user = useSelector((state: RootState) => state.user.user);
-  const token = useSelector((state: RootState) => state.user.token);
+  const exclusionPeriod = useSelector(
+    (state: RootState) => state.user.food.exclusionPeriod
+  );
   const dispatch = useDispatch();
   const { handleEditDisplayName } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [newDisplayName, setNewDisplayName] = useState(user?.displayName || "");
-
+  
+  // 로그아웃을 처리합니다.
   const handleLogout = useCallback(() => {
     dispatch(LogoutSuccess());
     router.push("/");
   }, [dispatch]);
 
+  // 닉네임 수정을 시작
   const startEdit = useCallback(() => setIsEditing(true), []);
+  // 닉네임 수정을 취소
   const cancelEdit = useCallback(() => {
     setIsEditing(false);
     setNewDisplayName(user?.displayName || "");
   }, [user]);
 
+  // 수정된 닉네임을 저장
   const confirmEdit = useCallback(async () => {
-    if (token) {
-      const response = await handleEditDisplayName(newDisplayName, token);
-      if (response.success) {
-        setIsEditing(false);
-      } else {
-        alert(response.message || "이름 변경에 실패했습니다.");
-      }
-    } else {
-      alert("로그인이 필요합니다.");
+    if (user && newDisplayName) {
+      await handleEditDisplayName(newDisplayName);
+      setIsEditing(false);
     }
-  }, [token, newDisplayName, handleEditDisplayName]);
+  }
+  , [handleEditDisplayName, newDisplayName, user]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -57,10 +58,11 @@ const MyInfoPage = () => {
   const handleExclusionPeriodChange = async (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    console.log("Selected value:", event.target.value);
     const days = parseInt(event.target.value, 10);
-    if (user && days) {
-      await updateExclusionPeriod(user.uid, days);
-    }
+    
+    // 선택된 기간을 저장합니다.
+    await updateExclusionPeriod(days);
   };
 
   return (
@@ -102,8 +104,9 @@ const MyInfoPage = () => {
           </label>
           <select
             id="exclude-food"
+            value={exclusionPeriod} 
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-1/3 p-2.5"
-            onChange={handleExclusionPeriodChange}
+            onChange={handleExclusionPeriodChange} 
           >
             <option value="1">1일</option>
             <option value="3">3일</option>
