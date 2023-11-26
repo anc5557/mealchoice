@@ -4,32 +4,27 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { admin } from "@/firebase/firebaseAdmin";
-import { parseCookies } from "nookies";
+import { verifyAuthToken } from "@/middleware/verifyAuthToken";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === "POST") {
-    try {
-      const { days } = req.body; // days: 제외기간
+  await verifyAuthToken(req, res, async () => {
+    if (req.method === "POST") {
+      try {
+        const { days } = req.body;
+        const decodedToken = (req as any).user;
 
-      // 토큰 검증
-      const cookies = parseCookies({ req });
-      const token = cookies.authToken;
-      const decodedToken = await admin.auth().verifyIdToken(token);
+        const foodDocRef = admin.firestore().doc(`users/${decodedToken.uid}/foods/${decodedToken.uid}`);
+        await foodDocRef.update({ exclusionPeriod: days });
 
-      // 제외기간 업데이트
-      const foodDocRef = admin.firestore().doc(`users/${decodedToken.uid}/foods/${decodedToken.uid}`);
-      await foodDocRef.update({ exclusionPeriod: days });
-
-      // 응답
-      res
-        .status(200)
-        .json({ message: "Exclusion period updated successfully" });
-    } catch (error) {
-      res.status(403).json({ error: "Forbidden" });
+        res.status(200).json({ message: "Exclusion period updated successfully" });
+      } catch (error) {
+        res.status(403).json({ error: "Forbidden" });
+      }
+    } else {
+      res.setHeader("Allow", "POST");
+      res.status(405).end("Method Not Allowed");
     }
-  } else {
-    res.setHeader("Allow", "POST");
-    res.status(405).end("Method Not Allowed");
-  }
+  });
 };
+
 export default handler;
