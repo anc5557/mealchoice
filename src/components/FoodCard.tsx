@@ -15,14 +15,11 @@ const FoodCard = () => {
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태
 
   // 1. 추천 음식 가져오기
-    // 1-1. chatgpt에게 추천 음식 문장 생성 요청
+  // 1-1. chatgpt에게 추천 음식 문장 생성 요청
   // 2. 추천 음식 결정
   // 3. 추천 음식 싫어요
 
-
-  return (
-    null
-  );
+  return null;
 };
 
 export default FoodCard;

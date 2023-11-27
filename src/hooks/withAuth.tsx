@@ -5,10 +5,10 @@
 // 입력 : 접근 하려는 페이지 경로 (string)
 // 출력 : 로그인 상태에 따라 페이지 이동, 그대로 렌더링, home으로 이동, index으로 이동
 
-import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { RootState } from '../store';
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { RootState } from "../store";
 
 const withAuth = (WrappedComponent: React.ComponentType, needAuth = true) => {
   const WithAuthComponent = (props: any) => {
@@ -17,16 +17,18 @@ const withAuth = (WrappedComponent: React.ComponentType, needAuth = true) => {
 
     useEffect(() => {
       if (needAuth && !isLoggedIn) {
-        router.push('/');
+        router.push("/");
       } else if (!needAuth && isLoggedIn) {
-        router.push('/home');
+        router.push("/home");
       }
     }, [isLoggedIn, router]);
 
     return isLoggedIn || !needAuth ? <WrappedComponent {...props} /> : null;
   };
 
-  WithAuthComponent.displayName = `withAuth(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
+  WithAuthComponent.displayName = `withAuth(${
+    WrappedComponent.displayName || WrappedComponent.name || "Component"
+  })`;
 
   return WithAuthComponent;
 };

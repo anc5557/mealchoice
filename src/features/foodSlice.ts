@@ -1,6 +1,6 @@
 // path : src/features/foodSlice.ts
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import sessionStorage from "redux-persist/lib/storage/session";
 
@@ -12,12 +12,12 @@ interface FoodState {
 
 // Define the initial state using that type
 const initialState: FoodState = {
-  category: '한식',
-  time: '점심', 
+  category: "한식",
+  time: "점심",
 };
 
 export const foodSlice = createSlice({
-  name: 'food',
+  name: "food",
   initialState,
   reducers: {
     // 카테고리 설정
@@ -32,15 +32,13 @@ export const foodSlice = createSlice({
 });
 
 // Export the actions
-export const { setCategory, setTime} = foodSlice.actions;
+export const { setCategory, setTime } = foodSlice.actions;
 
 const persistConfig = {
-    key: "food",
-    storage : sessionStorage,
-  };
+  key: "food",
+  storage: sessionStorage,
+};
 
 const persistedReducer = persistReducer(persistConfig, foodSlice.reducer);
 
 export default persistedReducer;
-
-  

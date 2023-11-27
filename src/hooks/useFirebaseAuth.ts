@@ -1,8 +1,8 @@
 // src/hooks/useFirebaseAuth.ts
-import { useEffect } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { app } from '../firebase/firebasedb';
-import { useDispatch } from 'react-redux';
+import { useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { app } from "../firebase/firebasedb";
+import { useDispatch } from "react-redux";
 
 export const useFirebaseAuth = () => {
   const dispatch = useDispatch();
@@ -12,14 +12,14 @@ export const useFirebaseAuth = () => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         const user = {
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            displayName: firebaseUser.displayName,
-            photoURL: firebaseUser.photoURL,
-          };
-          dispatch({ type: "LOGIN", payload: user });
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL,
+        };
+        dispatch({ type: "LOGIN", payload: user });
       } else {
-        dispatch({ type: 'LOGOUT' });
+        dispatch({ type: "LOGOUT" });
       }
     });
 

@@ -31,7 +31,7 @@ const FoodCategory = () => {
               <button
                 key={cat}
                 className={`${
-                  localCategory === cat ? "bg-blue-500" : "bg-gray-400" 
+                  localCategory === cat ? "bg-blue-500" : "bg-gray-400"
                 } text-white font-bold py-1 px-2 rounded mr-1`}
                 onClick={() => onClickCategory(cat)}
               >
@@ -44,7 +44,7 @@ const FoodCategory = () => {
               <button
                 key={t}
                 className={`${
-                  localTime === t ? "bg-red-500" : "bg-gray-400" 
+                  localTime === t ? "bg-red-500" : "bg-gray-400"
                 } text-white font-bold py-1 px-2 rounded mr-1`}
                 onClick={() => onClickTime(t)}
               >

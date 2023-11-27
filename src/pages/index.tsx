@@ -87,6 +87,6 @@ const Index = () => {
       </div>
     </div>
   );
-}
+};
 
 export default withAuth(Index, false);

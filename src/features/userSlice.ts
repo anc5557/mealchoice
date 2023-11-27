@@ -58,11 +58,16 @@ export const userSlice = createSlice({
   },
 });
 
-export const {LoginSuccess, LogoutSuccess, EditDisplayName, setExclusionPeriod } = userSlice.actions;
+export const {
+  LoginSuccess,
+  LogoutSuccess,
+  EditDisplayName,
+  setExclusionPeriod,
+} = userSlice.actions;
 
 const persistConfig = {
   key: "user",
-  storage : sessionStorage,
+  storage: sessionStorage,
 };
 
 const persistedReducer = persistReducer(persistConfig, userSlice.reducer);

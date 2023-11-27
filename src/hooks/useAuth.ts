@@ -46,7 +46,6 @@ const providerMap: {
   github: new GithubAuthProvider(),
 };
 
-
 export const useAuth = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -116,7 +115,7 @@ export const useAuth = () => {
       const food = await getsetFoodData(result.user.uid);
 
       // 쿠키에 토큰 저장
-      await axios.post('/api/auth/setToken', { token });
+      await axios.post("/api/auth/setToken", { token });
 
       dispatch(
         LoginSuccess({
@@ -165,7 +164,7 @@ export const useAuth = () => {
       const food = await getsetFoodData(result.user.uid);
 
       // 쿠키에 토큰 저장
-      await axios.post('/api/auth/setToken', { token });
+      await axios.post("/api/auth/setToken", { token });
 
       dispatch(
         LoginSuccess({
@@ -248,14 +247,14 @@ export const useAuth = () => {
 
   // displayName 변경 함수
   // API 라우트 사용, axios 사용
-  // 입력 : displayName, 쿠키 
+  // 입력 : displayName, 쿠키
   // 출력 : 성공 메시지
   const handleEditDisplayName = async (newDisplayName: string) => {
     try {
       const response = await axios.post(
         "/api/auth/editDisplayName",
         { newDisplayName },
-        { withCredentials: true },
+        { withCredentials: true }
       );
 
       if (response.status === 200) {

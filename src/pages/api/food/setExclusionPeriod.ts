@@ -13,10 +13,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const { days } = req.body;
         const decodedToken = (req as any).user;
 
-        const foodDocRef = admin.firestore().doc(`users/${decodedToken.uid}/foods/${decodedToken.uid}`);
+        const foodDocRef = admin
+          .firestore()
+          .doc(`users/${decodedToken.uid}/foods/${decodedToken.uid}`);
         await foodDocRef.update({ exclusionPeriod: days });
 
-        res.status(200).json({ message: "Exclusion period updated successfully" });
+        res
+          .status(200)
+          .json({ message: "Exclusion period updated successfully" });
       } catch (error) {
         res.status(403).json({ error: "Forbidden" });
       }

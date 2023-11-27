@@ -27,7 +27,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         res.status(200).json({ success: true });
       } catch (error) {
-        res.status(401).json({ success: false, message: "요청을 처리할 수 없습니다." });
+        res
+          .status(401)
+          .json({ success: false, message: "요청을 처리할 수 없습니다." });
       }
     } else {
       res.setHeader("Allow", "POST");

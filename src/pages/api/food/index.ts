@@ -2,7 +2,15 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "../../../firebase/firebasedb";
-import { collection, getDocs, doc, updateDoc, arrayUnion, getDoc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  arrayUnion,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,7 +21,7 @@ export default async function handler(
   if (req.method === "GET") {
     try {
       const snapshot = await getDocs(foodCollectionRef);
-      const foods = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const foods = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       res.status(200).json(foods);
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
@@ -23,7 +31,7 @@ export default async function handler(
   if (req.method === "POST") {
     try {
       const { uid, like, hate } = req.body;
-      
+
       const userDocRef = doc(db, "food", uid);
       const userDocSnapshot = await getDoc(userDocRef);
 
@@ -31,7 +39,7 @@ export default async function handler(
         await setDoc(userDocRef, { like: [], hate: [] });
       }
 
-      // 
+      //
       await updateDoc(userDocRef, {
         like: arrayUnion(...like),
         hate: arrayUnion(...hate),
