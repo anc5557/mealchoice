@@ -33,12 +33,12 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    LoginSuccess: (state, action: PayloadAction<UserState>) => {
+    LoginSuccessReducers: (state, action: PayloadAction<UserState>) => {
       state.isLoggedIn = action.payload.isLoggedIn;
       state.user = action.payload.user;
       state.food = action.payload.food;
     },
-    LogoutSuccess: (state) => {
+    LogoutSuccessReducers: (state) => {
       state.isLoggedIn = false;
       state.user = null;
       state.food = {
@@ -47,22 +47,37 @@ export const userSlice = createSlice({
         like: [],
       };
     },
-    EditDisplayName: (state, action: PayloadAction<string>) => {
+    EditDisplayNameReducers: (state, action: PayloadAction<string>) => {
       state.user!.displayName = action.payload; // user가 null이 아닐 때만 작동
     },
 
     // 제외 기간 설정
-    setExclusionPeriod: (state, action: PayloadAction<number>) => {
+    setExclusionPeriodReducers: (state, action: PayloadAction<number>) => {
       state.food.exclusionPeriod = action.payload;
+    },
+
+    removeFoodReducers: (
+      state,
+      action: PayloadAction<{ foodname: string; type: "like" | "hate" }>
+    ) => {
+      const { foodname, type } = action.payload;
+      if (type === "like") {
+        // 'like' 배열에서 id에 해당하는 음식을 제거합니다.
+        state.food.like = state.food.like.filter((food) => food !== foodname);
+      } else if (type === "hate") {
+        // 'hate' 배열에서 id에 해당하는 음식을 제거합니다.
+        state.food.hate = state.food.hate.filter((food) => food !== foodname);
+      }
     },
   },
 });
 
 export const {
-  LoginSuccess,
-  LogoutSuccess,
-  EditDisplayName,
-  setExclusionPeriod,
+  LoginSuccessReducers,
+  LogoutSuccessReducers,
+  EditDisplayNameReducers,
+  setExclusionPeriodReducers,
+  removeFoodReducers,
 } = userSlice.actions;
 
 const persistConfig = {

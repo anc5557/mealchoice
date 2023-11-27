@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
-import { LogoutSuccess } from "../features/userSlice";
+import { LogoutSuccessReducers } from "../features/userSlice";
 import Link from "next/link";
 import router from "next/router";
 import { useAuth } from "../hooks/useAuth";
@@ -9,6 +9,7 @@ import { ProfilePicture } from "../components/ProfilePicture";
 import { DisplayName } from "../components/DisplayName";
 import withAuth from "@/hooks/withAuth";
 import { useFood } from "@/hooks/useFood";
+import FoodModal from "../components/FoodModal"; // 모달창
 import "../styles/globals.css";
 
 const MyInfoPage = () => {
@@ -21,10 +22,33 @@ const MyInfoPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [newDisplayName, setNewDisplayName] = useState(user?.displayName || "");
+  const { removeFood } = useFood();
+
+  // 모달창
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<"like" | "hate">("like");
+  const likeFoodList = useSelector((state: RootState) => state.user.food.like);
+  const hateFoodList = useSelector((state: RootState) => state.user.food.hate);
+
+  // 모달창 열기
+  const openModal = useCallback((type: "like" | "hate") => {
+    setModalType(type);
+    setIsModalOpen(true);
+  }, []);
+
+  // 모달창 닫기
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  // 모달에서 음식을 삭제하는 함수
+  const handleRemoveFood = async (foodname: string) => {
+    await removeFood(foodname, modalType);
+  };
 
   // 로그아웃을 처리합니다.
   const handleLogout = useCallback(() => {
-    dispatch(LogoutSuccess());
+    dispatch(LogoutSuccessReducers());
     router.push("/");
   }, [dispatch]);
 
@@ -117,26 +141,39 @@ const MyInfoPage = () => {
             <option value="14">14일</option>
           </select>
         </div>
-        <div className="mt-6  ">
+        <div className="mt-6">
           <label
-            htmlFor="exclude-food"
+            htmlFor="food-settings"
             className="block mb-3 text-lg font-medium text-gray-900"
           >
             음식 설정
           </label>
           <div className="flex space-x-3">
-            <Link href="/favorite-food">
-              <span className="px-3 py-2 text-sm  bg-blue-500 text-white rounded hover:bg-blue-600 ">
-                좋아하는 음식
-              </span>
-            </Link>
-            <Link href="/hate-food">
-              <span className="px-3 py-2 text-sm  bg-red-500 text-white rounded hover:bg-red-600">
-                싫어하는 음식
-              </span>
-            </Link>
+            {/* 좋아하는 음식 설정 버튼 */}
+            <button
+              onClick={() => openModal("like")}
+              className="px-3 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              좋아하는 음식
+            </button>
+            {/* 싫어하는 음식 설정 버튼 */}
+            <button
+              onClick={() => openModal("hate")}
+              className="px-3 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              싫어하는 음식
+            </button>
           </div>
         </div>
+        {isModalOpen && (
+          <FoodModal
+            type={modalType}
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            foodList={modalType === "like" ? likeFoodList : hateFoodList}
+            onRemoveFood={handleRemoveFood}
+          />
+        )}
       </div>
     </div>
   );

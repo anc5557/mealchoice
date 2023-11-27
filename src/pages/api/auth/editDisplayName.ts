@@ -3,20 +3,27 @@
 // 출력값 : 성공 여부
 
 import { NextApiRequest, NextApiResponse } from "next";
-import { FIREBASE_ERRORS } from "@/firebase/errors";
 import { admin } from "@/firebase/firebaseAdmin";
 import { verifyAuthToken } from "@/middleware/verifyAuthToken";
 
-interface FirebaseError extends Error {
-  code: keyof typeof FIREBASE_ERRORS;
+interface NextApiRequestWithUser extends NextApiRequest {
+  user: { uid: string };
 }
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
   await verifyAuthToken(req, res, async () => {
     if (req.method === "POST") {
       try {
         const { newDisplayName } = req.body;
-        const decodedToken = (req as any).user;
+
+        if (!newDisplayName) {
+          res
+            .status(400)
+            .json({ success: false, message: "닉네임이 필요합니다." });
+          return;
+        }
+
+        const decodedToken = req.user;
 
         await admin.auth().updateUser(decodedToken.uid, {
           displayName: newDisplayName,

@@ -1,8 +1,11 @@
 // path : mealchoice/src/hooks/useFood.ts
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import {
+  setExclusionPeriodReducers,
+  removeFoodReducers,
+} from "../features/userSlice";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
-import { setExclusionPeriod } from "@/features/userSlice";
 
 interface FirebaseError extends Error {
   code: keyof typeof FIREBASE_ERRORS;
@@ -24,8 +27,8 @@ export const useFood = () => {
       );
 
       if (response.status === 200) {
-        // 리덕스 스토어에 저장된 사용자 정보 업데이트
-        dispatch(setExclusionPeriod(days));
+        // 리덕스 스토어에 저장된 제외 기간 업데이트
+        dispatch(setExclusionPeriodReducers(days));
 
         return response.data;
       } else {
@@ -44,6 +47,25 @@ export const useFood = () => {
     }
   };
 
-  return { updateExclusionPeriod };
+  // 음식을 삭제하는 함수
+  const removeFood = async (foodname: string, hateOrLike: "like" | "hate") => {
+    try {
+      const response = await axios.delete(`/api/food/${foodname}`, {
+        data: { hateOrLike },
+        withCredentials: true,
+      });
+
+      if (response.status === 200) {
+        // 리덕스 스토어에 저장된 푸드 업데이트
+        dispatch(removeFoodReducers({ foodname, type: hateOrLike }));
+      } else {
+        throw new Error("음식 삭제에 실패했습니다.");
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+  return { updateExclusionPeriod, removeFood };
 };
+
 export default useFood;

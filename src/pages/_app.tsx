@@ -7,10 +7,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "../store";
 import NavBar from "../components/NavBar";
 import "../styles/globals.css";
-import { useFirebaseAuth } from "../hooks/useFirebaseAuth";
 
 const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
-  useFirebaseAuth();
   const user = useSelector((state: { user: any }) => state.user);
   const isLoggedIn = !!user;
 

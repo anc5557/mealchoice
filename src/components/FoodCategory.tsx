@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setCategory, setTime } from "../features/foodSlice";
+import { setCategoryReducers, setTimeReducers } from "../features/foodSlice";
 
 const FoodCategory = () => {
   const [localCategory, setLocalCategory] = useState("한식");
@@ -13,12 +13,12 @@ const FoodCategory = () => {
 
   const onClickCategory = (newCategory: string) => {
     setLocalCategory(newCategory);
-    dispatch(setCategory(newCategory));
+    dispatch(setCategoryReducers(newCategory));
   };
 
   const onClickTime = (newTime: string) => {
     setLocalTime(newTime);
-    dispatch(setTime(newTime));
+    dispatch(setTimeReducers(newTime));
   };
 
   return (

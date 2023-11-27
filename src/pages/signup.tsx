@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
 import { useAuth } from "../hooks/useAuth";
 import withAuth from "@/hooks/withAuth";
 

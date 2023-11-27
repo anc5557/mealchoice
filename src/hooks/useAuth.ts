@@ -8,7 +8,10 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { LoginSuccess, EditDisplayName } from "../features/userSlice";
+import {
+  LoginSuccessReducers,
+  EditDisplayNameReducers,
+} from "../features/userSlice";
 import { useRouter } from "next/router";
 import { auth, db } from "../firebase/firebasedb";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -118,7 +121,7 @@ export const useAuth = () => {
       await axios.post("/api/auth/setToken", { token });
 
       dispatch(
-        LoginSuccess({
+        LoginSuccessReducers({
           isLoggedIn: true,
           user,
           food,
@@ -167,7 +170,7 @@ export const useAuth = () => {
       await axios.post("/api/auth/setToken", { token });
 
       dispatch(
-        LoginSuccess({
+        LoginSuccessReducers({
           isLoggedIn: true,
           user,
           food,
@@ -259,7 +262,7 @@ export const useAuth = () => {
 
       if (response.status === 200) {
         // 리덕스 스토어에 저장된 사용자 정보 업데이트
-        dispatch(EditDisplayName(newDisplayName));
+        dispatch(EditDisplayNameReducers(newDisplayName));
 
         return response.data;
       } else {

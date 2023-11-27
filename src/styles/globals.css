@@ -2,7 +2,6 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-@import 'postcss-preset-env';
 
 @keyframes spin {
   from {

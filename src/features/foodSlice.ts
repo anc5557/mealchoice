@@ -21,18 +21,18 @@ export const foodSlice = createSlice({
   initialState,
   reducers: {
     // 카테고리 설정
-    setCategory: (state, action: PayloadAction<string>) => {
+    setCategoryReducers: (state, action: PayloadAction<string>) => {
       state.category = action.payload;
     },
     // 시간대 설정
-    setTime: (state, action: PayloadAction<string>) => {
+    setTimeReducers: (state, action: PayloadAction<string>) => {
       state.time = action.payload;
     },
   },
 });
 
 // Export the actions
-export const { setCategory, setTime } = foodSlice.actions;
+export const { setCategoryReducers, setTimeReducers } = foodSlice.actions;
 
 const persistConfig = {
   key: "food",
