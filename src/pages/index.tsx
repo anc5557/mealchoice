@@ -68,6 +68,7 @@ const Index = () => {
                   alt="Github login"
                   width={40}
                   height={40}
+                  className="object-contain"
                 />
               </button>
               <button
@@ -79,6 +80,7 @@ const Index = () => {
                   alt="Google Login"
                   width={40}
                   height={40}
+                  className="object-contain"
                 />
               </button>
             </div>
