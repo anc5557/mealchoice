@@ -18,7 +18,7 @@ const NavBar = () => {
   return (
     <div className="fixed inset-x-0 bottom-0 bg-black shadow-lg px-4 py-4 flex justify-around items-center">
       <div className="flex-1" />
-      <Link href="/records" passHref>
+      <Link href="/history" passHref>
         <div className="px-2">
           <FiClock className="text-2xl text-white mx-auto" />
         </div>

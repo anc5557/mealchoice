@@ -22,9 +22,9 @@ const FoodModal = ({
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-      <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all max-w-2xl w-full p-3 mx-8 h-96">
-        <div className="flex flex-col h-full justify-between">
-          <div className="flex justify-between items-start p-4">
+      <div className="bg-white rounded-lg shadow-xl transform transition-all h-[450px] w-[300px] overflow-hidden"> {/* 크기 고정 */}
+        <div className="flex flex-col h-full">
+          <div className="flex justify-between items-center p-5">
             <h3
               className="text-lg leading-6 font-medium text-gray-900"
               id="modal-title"
@@ -38,15 +38,17 @@ const FoodModal = ({
               <span className="text-2xl">&times;</span>
             </button>
           </div>
-          <div className="flex-grow overflow-auto flex flex-col justify-center items-center ">
+          <div className="flex-grow overflow-auto">
             {foodList.length === 0 ? (
-              <p className="text-sm text-gray-500">리스트가 비어 있습니다.</p>
+              <p className="text-sm text-gray-500 p-4 text-center">
+                리스트가 비어 있습니다.
+              </p>
             ) : (
-              <ul className="text-sm text-gray-500 w-full">
+              <ul className="text-sm text-gray-500">
                 {foodList.map((foodname) => (
                   <li
                     key={foodname}
-                    className="flex justify-between items-center p-2 border-b"
+                    className="flex justify-between items-center p-3 border-b mx-4"
                   >
                     <span className="text-md font-medium">{foodname}</span>
                     <button
