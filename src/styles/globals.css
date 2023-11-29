@@ -7,15 +7,16 @@
   from {
     transform: rotate(0deg);
   }
-
   to {
     transform: rotate(360deg);
   }
 }
 
+.loading-overlay {
+  @apply fixed inset-0 z-50 flex justify-center items-center bg-white bg-opacity-50;
+}
+
 .spinner {
-
-
   @apply inline-block w-8 h-8 border-4 border-gray-700 rounded-full;
   border-top-color: transparent;
   animation: spin 1s linear infinite;
