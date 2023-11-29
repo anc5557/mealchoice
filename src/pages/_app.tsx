@@ -18,7 +18,7 @@ const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
         <title>Meal Choice</title>
         <meta name="description" content="Meal Choice" />
       </Head>
-      <div className="border-2 min-h-screen">
+      <div className="min-h-screen">
         <Component {...pageProps} />
       </div>
       {isLoggedIn && <NavBar />}
