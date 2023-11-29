@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { toast } from "react-toastify";
+
 import { FiHome, FiUser, FiClock } from "react-icons/fi";
 import "tailwindcss/tailwind.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,7 +11,7 @@ const NavBar = () => {
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
 
   if (!isLoggedIn) {
-    return null; // 로그인 상태가 아니면 NavBar를 렌더링하지 않습니다.
+    return null;
   }
 
   return (
