@@ -22,7 +22,7 @@ const DisplayName: React.FC<DisplayNameProps> = ({
   <div className="flex items-center mb-1">
     {!isEditing ? (
       <>
-        <div className="text-2xl font-medium text-gray-800 mr-2">{name}</div>
+        <div className="text-2xl font-medium text-gray-800 px-1">{name}</div>
         <button
           className="rounded-full hover:bg-gray-200 transition-color"
           onClick={startEdit}
@@ -49,7 +49,7 @@ const DisplayName: React.FC<DisplayNameProps> = ({
           type="text"
           value={newDisplayName}
           onChange={(e) => setNewDisplayName(e.target.value)}
-          className="text-2xl font-medium text-gray-800 mr-2 w-full max-w-full box-border border border-gray-400 rounded-lg mr-2"
+          className="text-2xl font-medium text-gray-800 px-1 w-full max-w-full box-border border border-gray-400 rounded-lg mr-2"
         />
         <button
           className="rounded-full hover:bg-gray-200 transition-color"

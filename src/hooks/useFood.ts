@@ -65,7 +65,30 @@ export const useFood = () => {
       handleError(error);
     }
   };
-  return { updateExclusionPeriod, removeFood };
+
+  // 음식 추천 함수
+  const handelRecommend = async (category: string, time: string) => {
+    try {
+      const response = await axios.post(`/api/food/recommendation`, {
+        category,
+        time
+      }, {
+        withCredentials: true,
+      });
+  
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        throw new Error("음식 추천에 실패했습니다.");
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+
+
+  return { updateExclusionPeriod, removeFood, handelRecommend };
 };
 
 export default useFood;
