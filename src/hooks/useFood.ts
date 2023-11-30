@@ -6,6 +6,7 @@ import {
   removeFoodReducers,
 } from "../features/userSlice";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
+import { useState } from "react";
 
 interface FirebaseError extends Error {
   code: keyof typeof FIREBASE_ERRORS;
@@ -13,6 +14,12 @@ interface FirebaseError extends Error {
 
 export const useFood = () => {
   const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+  const [food, setFood] = useState<{
+    name: string;
+    description: string;
+  } | null>(null);
 
   const handleError = (error: any) => {
     console.error("An error occurred:", error.message || error.toString());
@@ -69,26 +76,41 @@ export const useFood = () => {
   // 음식 추천 함수
   const handelRecommend = async (category: string, time: string) => {
     try {
-      const response = await axios.post(`/api/food/recommendation`, {
-        category,
-        time
-      }, {
-        withCredentials: true,
-      });
-  
-      if (response.status === 200) {
-        return response.data;
+      setIsLoading(true);
+      const response = await axios.post(
+        `/api/food/recommendation`,
+        {
+          category,
+          time,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200 && response.data.success) {
+        const responseData = JSON.parse(response.data.data);
+        setFood({
+          name: responseData.menu,
+          description: responseData.description,
+        });
       } else {
         throw new Error("음식 추천에 실패했습니다.");
       }
     } catch (error) {
       handleError(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-
-
-  return { updateExclusionPeriod, removeFood, handelRecommend };
+  return {
+    food,
+    isLoading,
+    updateExclusionPeriod,
+    removeFood,
+    handelRecommend,
+  };
 };
 
 export default useFood;

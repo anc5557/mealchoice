@@ -18,17 +18,10 @@ interface Food {
 }
 
 const FoodCard = () => {
-  const [food, setFood] = useState<Food | null>(null); // 추천 음식 상태
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
   const reduxfood = useSelector((state: RootState) => state.food);
 
-  const {handelRecommend}  = useFood();
+  const {food, isLoading, handelRecommend}  = useFood();
 
-
-
-  const onReset = () => {
-    setFood(null);
-  };
 
   return (
     <div className="flex flex-col items-center">
