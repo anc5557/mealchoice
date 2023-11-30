@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setCategoryReducers, setTimeReducers } from "../features/foodSlice";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import { RootState } from "../store";
-
 
 const FoodCategory = () => {
   const category = useSelector((state: RootState) => state.food.category);
   const time = useSelector((state: RootState) => state.food.time);
-  
+
   const [localCategory, setLocalCategory] = useState(category);
   const [localTime, setLocalTime] = useState(time);
 
@@ -28,36 +27,34 @@ const FoodCategory = () => {
   };
 
   return (
-
-        <div className="flex flex-col justify-center items-center border-2 border-gray-300 rounded-t-lg w-full">
-          <div className="flex flex-row my-4">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                className={`${
-                  localCategory === cat ? "bg-blue-500" : "bg-gray-400"
-                } text-white font-bold py-1 px-2 rounded mr-1`}
-                onClick={() => onClickCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-          <div className="flex flex-row mb-4">
-            {times.map((t) => (
-              <button
-                key={t}
-                className={`${
-                  localTime === t ? "bg-red-500" : "bg-gray-400"
-                } text-white font-bold py-1 px-2 rounded mr-1`}
-                onClick={() => onClickTime(t)}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
-
+    <div className="flex flex-col justify-center items-center border-2 border-gray-300 rounded-t-lg w-full">
+      <div className="flex flex-row my-4">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className={`${
+              localCategory === cat ? "bg-blue-500" : "bg-gray-400"
+            } text-white font-bold py-1 px-2 rounded mr-1`}
+            onClick={() => onClickCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+      <div className="flex flex-row mb-4">
+        {times.map((t) => (
+          <button
+            key={t}
+            className={`${
+              localTime === t ? "bg-red-500" : "bg-gray-400"
+            } text-white font-bold py-1 px-2 rounded mr-1`}
+            onClick={() => onClickTime(t)}
+          >
+            {t}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 };
 

@@ -78,7 +78,7 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 
       // gpt4
       // 프롬프트
-      const prompt = `최근에 먹은 음식 : ${exclusionFoods}, 싫어하는 음식 : ${hateFoods} , json 형식 : {menu: "추천 음식 이름", description: "추천 음식 설명"}`;
+      const prompt = `최근에 먹은 음식 : ${exclusionFoods}, 싫어하는 음식 : ${hateFoods} , json 형식 : {menu: "추천 음식 이름", description: "추천 이유 설명"}`;
 
       try {
         const response = await openai.chat.completions.create({

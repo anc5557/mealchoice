@@ -20,13 +20,12 @@ interface Food {
 const FoodCard = () => {
   const reduxfood = useSelector((state: RootState) => state.food);
 
-  const {food, isLoading, handelRecommend}  = useFood();
-
+  const { food, isLoading, handelRecommend } = useFood();
 
   return (
     <div className="flex flex-col items-center">
       {/* 로딩 중 UI */}
-      <div className="flex flex-col items-center border-2 border-t-0 border-gray-300 h-64 w-full relative">
+      <div className="flex flex-col items-center border-2 border-t-0 border-gray-300 h-80 w-full relative overflow-scroll">
         {isLoading ? (
           // 로딩 상태일 때 보여질 UI
           <div className="absolute inset-0 flex justify-center items-center ">
@@ -76,7 +75,9 @@ const FoodCard = () => {
             {/* 다시 버튼 */}
             <button
               className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => handelRecommend(reduxfood.category, reduxfood.time)}
+              onClick={() =>
+                handelRecommend(reduxfood.category, reduxfood.time)
+              }
             >
               <FontAwesomeIcon icon={faUndo} />
             </button>

@@ -64,7 +64,7 @@ const History = () => {
     </div>
   );
 
-const [slideIn, setSlideIn] = useState(false);
+  const [slideIn, setSlideIn] = useState(false);
 
   // 왼쪽 화살표를 눌렀을 때의 동작
   const handlePrevClick = () => {
@@ -84,49 +84,55 @@ const [slideIn, setSlideIn] = useState(false);
     }, 250); // 애니메이션 지속 시간에 맞춰 타이머 설정
   };
 
-// 왼쪽 화살표
-const PrevArrow = ({ onClick }: { onClick: () => void }) => {
+  // 왼쪽 화살표
+  const PrevArrow = ({ onClick }: { onClick: () => void }) => {
     return (
-        <div className="absolute top-1/2 left-4 bg-white rounded-full shadow-md" onClick={onClick}>
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-            >
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                />
-            </svg>
-        </div>
+      <div
+        className="absolute top-1/2 left-4 bg-white rounded-full shadow-md"
+        onClick={onClick}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </div>
     );
-};
+  };
 
-// 오른쪽 화살표
-const NextArrow = ({ onClick }: { onClick: () => void }) => {
+  // 오른쪽 화살표
+  const NextArrow = ({ onClick }: { onClick: () => void }) => {
     return (
-        <div className="absolute top-1/2 right-4 bg-white rounded-full shadow-md" onClick={onClick}>
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-            >
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                />
-            </svg>
-        </div>
+      <div
+        className="absolute top-1/2 right-4 bg-white rounded-full shadow-md"
+        onClick={onClick}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </div>
     );
-};
+  };
 
   return (
     <div className="flex flex-col items-center h-screen">
@@ -171,7 +177,10 @@ const NextArrow = ({ onClick }: { onClick: () => void }) => {
           <div className="relative grid grid-cols-1 gap-4">
             {/* 왼쪽 화살표 (첫 데이터가 아닐 때만 표시) */}
             {currentIndex > 0 && (
-              <div className="absolute left-0 z-10" style={{ top: '50%', transform: 'translateY(-50%)' }}>
+              <div
+                className="absolute left-0 z-10"
+                style={{ top: "50%", transform: "translateY(-50%)" }}
+              >
                 <PrevArrow onClick={handlePrevClick} />
               </div>
             )}
@@ -192,7 +201,10 @@ const NextArrow = ({ onClick }: { onClick: () => void }) => {
 
             {/* 오른쪽 화살표 (마지막 데이터가 아닐 때만 표시) */}
             {currentIndex < filteredHistoryData.length - 1 && (
-              <div className="absolute right-0 z-10" style={{ top: '50%', transform: 'translateY(-50%)' }}>
+              <div
+                className="absolute right-0 z-10"
+                style={{ top: "50%", transform: "translateY(-50%)" }}
+              >
                 <NextArrow onClick={handleNextClick} />
               </div>
             )}

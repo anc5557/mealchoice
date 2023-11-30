@@ -22,7 +22,9 @@ const FoodModal = ({
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-      <div className="bg-white rounded-lg shadow-xl transform transition-all h-[450px] w-[300px] overflow-hidden"> {/* 크기 고정 */}
+      <div className="bg-white rounded-lg shadow-xl transform transition-all h-[450px] w-[300px] overflow-hidden">
+        {" "}
+        {/* 크기 고정 */}
         <div className="flex flex-col h-full">
           <div className="flex justify-between items-center p-5">
             <h3
