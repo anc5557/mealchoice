@@ -44,6 +44,7 @@ const MyInfoPage = () => {
   // 모달에서 음식을 삭제하는 함수
   const handleRemoveFood = async (foodname: string) => {
     await removeFood(foodname, modalType);
+    
   };
 
   // 로그아웃을 처리합니다.

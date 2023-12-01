@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import {
   setExclusionPeriodReducers,
+  addFoodReducers,
   removeFoodReducers,
 } from "../features/userSlice";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
@@ -54,17 +55,34 @@ export const useFood = () => {
     }
   };
 
-  // 음식을 삭제하는 함수
-  const removeFood = async (foodname: string, hateOrLike: "like" | "hate") => {
+  // 음식 가져오는 함수
+  const getFood = async (reaction: "like" | "hate") => {
     try {
-      const response = await axios.delete(`/api/food/${foodname}`, {
-        data: { hateOrLike },
+      const response = await axios.get(`/api/food/${reaction}`, {
         withCredentials: true,
       });
 
       if (response.status === 200) {
-        // 리덕스 스토어에 저장된 푸드 업데이트
-        dispatch(removeFoodReducers({ foodname, type: hateOrLike }));
+        return response.data;
+      } else {
+        throw new Error("음식 가져오기에 실패했습니다.");
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  // 음식을 삭제하는 함수
+  const removeFood = async (foodname: string, reaction: "like" | "hate") => {
+    try {
+      const response = await axios.delete(`/api/food/${reaction}`, {
+        data: { foodname },
+        withCredentials: true,
+      });
+
+      if (response.status === 200) {
+        dispatch(removeFoodReducers({ foodname, type: reaction }));
+        return response.data;
       } else {
         throw new Error("음식 삭제에 실패했습니다.");
       }
@@ -153,6 +171,7 @@ export const useFood = () => {
       );
 
       if (response.status === 200) {
+        dispatch(addFoodReducers({ foodname, type: "hate" }));
         return response.data;
       } else {
         throw new Error("음식 추가에 실패했습니다.");
@@ -170,6 +189,7 @@ export const useFood = () => {
     recommendFood,
     addHistory,
     hateFood,
+    getFood,
   };
 };
 

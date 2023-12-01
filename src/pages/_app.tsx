@@ -7,6 +7,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "../store";
 import NavBar from "../components/NavBar";
 import "../styles/globals.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
   const user = useSelector((state: { user: any }) => state.user);
@@ -22,6 +24,7 @@ const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
         <Component {...pageProps} />
       </div>
       {isLoggedIn && <NavBar />}
+      <ToastContainer />
     </>
   );
 };

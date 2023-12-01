@@ -11,6 +11,7 @@ import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import useFood from "@/hooks/useFood";
 import { toast } from "react-toastify";
+import { addFoodReducers } from "@/features/userSlice";
 
 interface Food {
   name: string;
@@ -48,9 +49,9 @@ const FoodCard = () => {
       );
       setIsLiked(true);
       setIsDisliked(true);
-      toast.success("좋아요!");
+      toast.success("좋아요! 이 음식으로 결정하셨습니다. 기록에서 확인하세요.");
     } catch (error) {
-      toast.error("좋아요 실패했습니다.");
+      toast.error("실패했습니다.");
     }
   };
 
@@ -70,7 +71,7 @@ const FoodCard = () => {
       await hateFood(food.name);
       setIsLiked(true);
       setIsDisliked(true);
-      toast.success("싫어요!");
+      toast.success("이 음식을 추천에서 제외했습니다.");
     } catch (error) {
       toast.error("싫어요 실패했습니다.");
     }
@@ -135,7 +136,7 @@ const FoodCard = () => {
             </button>
             {/* 다시 버튼 */}
             <button
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
               onClick={handleRecommend}
             >
               <FontAwesomeIcon icon={faUndo} />

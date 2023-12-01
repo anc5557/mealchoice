@@ -62,11 +62,26 @@ export const userSlice = createSlice({
     ) => {
       const { foodname, type } = action.payload;
       if (type === "like") {
-        // 'like' 배열에서 id에 해당하는 음식을 제거합니다.
+        // 'like' 배열에 id에 해당하는 음식을 제거합니다.
         state.food.like = state.food.like.filter((food) => food !== foodname);
       } else if (type === "hate") {
-        // 'hate' 배열에서 id에 해당하는 음식을 제거합니다.
+        // 'hate' 배열에 id에 해당하는 음식을 제거합니다.
         state.food.hate = state.food.hate.filter((food) => food !== foodname);
+      }
+    },
+
+    // 음식 추가
+    addFoodReducers: (
+      state,
+      action: PayloadAction<{ foodname: string; type: "like" | "hate" }>
+    ) => {
+      const { foodname, type } = action.payload;
+      if (type === "like") {
+        // 'like' 배열에 id에 해당하는 음식을 추가합니다.
+        state.food.like.push(foodname);
+      } else if (type === "hate") {
+        // 'hate' 배열에 id에 해당하는 음식을 추가합니다.
+        state.food.hate.push(foodname);
       }
     },
   },
@@ -78,6 +93,7 @@ export const {
   EditDisplayNameReducers,
   setExclusionPeriodReducers,
   removeFoodReducers,
+  addFoodReducers,
 } = userSlice.actions;
 
 const persistConfig = {
