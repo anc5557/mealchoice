@@ -2,7 +2,6 @@ import React, { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import { LogoutSuccessReducers } from "../features/userSlice";
-import Link from "next/link";
 import router from "next/router";
 import { useAuth } from "../hooks/useAuth";
 import { ProfilePicture } from "../components/ProfilePicture";
@@ -11,6 +10,7 @@ import withAuth from "@/hooks/withAuth";
 import { useFood } from "@/hooks/useFood";
 import FoodModal from "../components/FoodModal"; // 모달창
 import "../styles/globals.css";
+import { toast } from "react-toastify";
 
 const MyInfoPage = () => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -44,13 +44,14 @@ const MyInfoPage = () => {
   // 모달에서 음식을 삭제하는 함수
   const handleRemoveFood = async (foodname: string) => {
     await removeFood(foodname, modalType);
-    
+    toast.success("삭제했습니다.");
   };
 
   // 로그아웃을 처리합니다.
   const handleLogout = useCallback(() => {
     dispatch(LogoutSuccessReducers());
     router.push("/");
+    toast.success("로그아웃 되었습니다.");
   }, [dispatch]);
 
   // 닉네임 수정을 시작
@@ -68,10 +69,10 @@ const MyInfoPage = () => {
       if (user && newDisplayName) {
         await handleEditDisplayName(newDisplayName);
         setIsEditing(false);
+        toast.success("닉네임이 변경되었습니다.");
       }
     } catch (error) {
-      // 오류 처리
-      console.error(error);
+      toast.error("닉네임 변경에 실패했습니다.");
     } finally {
       setIsLoading(false); // 로딩 종료
     }
@@ -86,6 +87,7 @@ const MyInfoPage = () => {
 
     // 선택된 기간을 저장합니다.
     await updateExclusionPeriod(days);
+    toast.success("설정이 저장되었습니다.");
   };
 
   return (

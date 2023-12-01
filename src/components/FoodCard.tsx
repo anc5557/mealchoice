@@ -11,7 +11,6 @@ import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import useFood from "@/hooks/useFood";
 import { toast } from "react-toastify";
-import { addFoodReducers } from "@/features/userSlice";
 
 interface Food {
   name: string;
