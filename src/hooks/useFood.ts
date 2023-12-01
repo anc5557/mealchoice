@@ -74,7 +74,7 @@ export const useFood = () => {
   };
 
   // 음식 추천 함수
-  const handelRecommend = async (category: string, time: string) => {
+  const recommendFood = async (category: string, time: string) => {
     try {
       setIsLoading(true);
       const response = await axios.post(
@@ -104,12 +104,48 @@ export const useFood = () => {
     }
   };
 
+  // 음식 결정 함수
+  const addHistory = async (
+    foodname: string,
+    description: string,
+    date: Date,
+    category: string,
+    time: string,
+    memo: string
+  ) => {
+    try {
+      const response = await axios.post(
+        `/food/recommendation/decsion`,
+        {
+          foodname,
+          description,
+          date,
+          category,
+          time,
+          memo,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        // 응답 처리 로직
+      } else {
+        throw new Error("음식 추가에 실패했습니다.");
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   return {
     food,
     isLoading,
     updateExclusionPeriod,
     removeFood,
-    handelRecommend,
+    recommendFood,
+    addHistory,
   };
 };
 

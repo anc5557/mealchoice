@@ -1,7 +1,6 @@
 // path: mealchoice/src/components/FoodCard.tsx
 
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUndo,
@@ -20,7 +19,7 @@ interface Food {
 const FoodCard = () => {
   const reduxfood = useSelector((state: RootState) => state.food);
 
-  const { food, isLoading, handelRecommend } = useFood();
+  const { food, isLoading, recommendFood, addHistory } = useFood();
 
   return (
     <div className="flex flex-col items-center">
@@ -56,7 +55,7 @@ const FoodCard = () => {
             className={`bg-blue-500 text-white font-bold py-2 px-4 rounded ${
               isLoading && "opacity-50 cursor-not-allowed"
             }`}
-            onClick={() => handelRecommend(reduxfood.category, reduxfood.time)}
+            onClick={() => recommendFood(reduxfood.category, reduxfood.time)}
             disabled={isLoading}
           >
             추천받기
@@ -69,15 +68,23 @@ const FoodCard = () => {
                 isLoading && "opacity-50 cursor-not-allowed"
               }`}
               disabled={isLoading}
+              onClick={() => {
+                addHistory(
+                  food.name,
+                  food.description,
+                  new Date(),
+                  reduxfood.category,
+                  reduxfood.time,
+                  ""
+                );
+              }}
             >
               <FontAwesomeIcon icon={faCheck} />
             </button>
             {/* 다시 버튼 */}
             <button
               className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() =>
-                handelRecommend(reduxfood.category, reduxfood.time)
-              }
+              onClick={() => recommendFood(reduxfood.category, reduxfood.time)}
             >
               <FontAwesomeIcon icon={faUndo} />
             </button>

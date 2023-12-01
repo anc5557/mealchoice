@@ -10,16 +10,6 @@ interface NextApiRequestWithUser extends NextApiRequest {
   user: { uid: string };
 }
 
-type Food = {
-  foodname: string;
-  category: string;
-  time: string;
-  hateFoods: string[];
-  exclusionPeriod: number;
-  history: string[];
-  exclusionFoods: string[];
-};
-
 const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
   await verifyAuthToken(req, res, async () => {
     if (req.method === "POST") {
