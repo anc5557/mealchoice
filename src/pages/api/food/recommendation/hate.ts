@@ -28,3 +28,5 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
     }
   });
 };
+
+export default handler;

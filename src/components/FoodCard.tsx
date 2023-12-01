@@ -1,6 +1,6 @@
 // path: mealchoice/src/components/FoodCard.tsx
 
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUndo,
@@ -10,6 +10,7 @@ import {
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import useFood from "@/hooks/useFood";
+import { toast } from "react-toastify";
 
 interface Food {
   name: string;
@@ -18,8 +19,68 @@ interface Food {
 
 const FoodCard = () => {
   const reduxfood = useSelector((state: RootState) => state.food);
+  const { food, isLoading, recommendFood, addHistory, hateFood } = useFood();
 
-  const { food, isLoading, recommendFood, addHistory } = useFood();
+  // 좋아요, 싫어요 버튼 상태 관리
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDisliked, setIsDisliked] = useState(false);
+
+  const handleLike = async () => {
+    if (isLiked) {
+      toast.error("이미 좋아요를 누르셨습니다.");
+      return;
+    }
+
+    if (!food) {
+      toast.error("음식 정보가 없습니다.");
+      return;
+    }
+
+    try {
+      // addHistory 함수
+      await addHistory(
+        food.name,
+        food.description,
+        new Date(),
+        reduxfood.category,
+        reduxfood.time,
+        ""
+      );
+      setIsLiked(true);
+      setIsDisliked(true);
+      toast.success("좋아요!");
+    } catch (error) {
+      toast.error("좋아요 실패했습니다.");
+    }
+  };
+
+  const handleDislike = async () => {
+    if (isDisliked) {
+      toast.error("이미 싫어요를 누르셨습니다.");
+      return;
+    }
+
+    if (!food) {
+      toast.error("음식 정보가 없습니다.");
+      return;
+    }
+
+    try {
+      // hateFood 함수
+      await hateFood(food.name);
+      setIsLiked(true);
+      setIsDisliked(true);
+      toast.success("싫어요!");
+    } catch (error) {
+      toast.error("싫어요 실패했습니다.");
+    }
+  };
+
+  const handleRecommend = () => {
+    recommendFood(reduxfood.category, reduxfood.time);
+    setIsLiked(false);
+    setIsDisliked(false);
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -55,7 +116,7 @@ const FoodCard = () => {
             className={`bg-blue-500 text-white font-bold py-2 px-4 rounded ${
               isLoading && "opacity-50 cursor-not-allowed"
             }`}
-            onClick={() => recommendFood(reduxfood.category, reduxfood.time)}
+            onClick={handleRecommend}
             disabled={isLoading}
           >
             추천받기
@@ -65,35 +126,27 @@ const FoodCard = () => {
             {/* 결정 버튼 */}
             <button
               className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${
-                isLoading && "opacity-50 cursor-not-allowed"
+                (isLoading || isLiked) && "opacity-50 cursor-not-allowed"
               }`}
-              disabled={isLoading}
-              onClick={() => {
-                addHistory(
-                  food.name,
-                  food.description,
-                  new Date(),
-                  reduxfood.category,
-                  reduxfood.time,
-                  ""
-                );
-              }}
+              disabled={isLoading || isLiked}
+              onClick={handleLike}
             >
               <FontAwesomeIcon icon={faCheck} />
             </button>
             {/* 다시 버튼 */}
             <button
               className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => recommendFood(reduxfood.category, reduxfood.time)}
+              onClick={handleRecommend}
             >
               <FontAwesomeIcon icon={faUndo} />
             </button>
             {/* 싫어요 버튼 */}
             <button
               className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${
-                isLoading && "opacity-50 cursor-not-allowed"
+                (isLoading || isDisliked) && "opacity-50 cursor-not-allowed"
               }`}
-              disabled={isLoading}
+              disabled={isLoading || isDisliked}
+              onClick={handleDislike}
             >
               <FontAwesomeIcon icon={faThumbsDown} />{" "}
             </button>

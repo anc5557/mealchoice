@@ -49,7 +49,7 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 
       const exclusionFoods = history
         .filter((food) => {
-          const foodDate = food.date.toDate();
+          const foodDate = new Date(food.date);
           return foodDate.getTime() > exclusionDate.getTime();
         })
         .map((food) => {
@@ -77,7 +77,6 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
           ],
           response_format: { type: "json_object" },
         });
-        console.log(response.choices[0].message.content);
 
         return res
           .status(200)

@@ -115,7 +115,7 @@ export const useFood = () => {
   ) => {
     try {
       const response = await axios.post(
-        `/food/recommendation/decsion`,
+        `/api/food/recommendation/decsion`,
         {
           foodname,
           description,
@@ -130,7 +130,30 @@ export const useFood = () => {
       );
 
       if (response.status === 200) {
-        // 응답 처리 로직
+        return response.data;
+      } else {
+        throw new Error("음식 추가에 실패했습니다.");
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  // 을식 싫어요 함수
+  const hateFood = async (foodname: string) => {
+    try {
+      const response = await axios.post(
+        `/api/food/recommendation/hate`,
+        {
+          foodname,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
       } else {
         throw new Error("음식 추가에 실패했습니다.");
       }
@@ -146,6 +169,7 @@ export const useFood = () => {
     removeFood,
     recommendFood,
     addHistory,
+    hateFood,
   };
 };
 
