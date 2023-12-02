@@ -17,6 +17,7 @@ import {
   faArrowLeft,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
+import HistoryMemoModal from "@/components/HistoryMemoModal";
 
 interface HistoryProps {
   historyData: {
@@ -88,6 +89,42 @@ const History: React.FC<HistoryProps> = ({ historyData, error }) => {
   const [year, setYear] = useState(new Date().getFullYear());
 
   const currentYear = new Date().getFullYear();
+
+  //modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMemo, setSelectedMemo] = useState("");
+
+  const handleMemoClick = (memo: string) => {
+    setSelectedMemo(memo);
+    setIsModalOpen(true);
+  };
+
+  const saveMemo = async (editedMemo: string) => {
+    try {
+      const response = await fetch(
+        `/api/history/${filteredHistoryData[currentIndex].id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ memo: editedMemo }),
+        }
+      );
+
+      if (response.ok) {
+        toast.success("메모가 저장되었습니다.");
+        const updatedHistoryData = [...historydata];
+        updatedHistoryData[currentIndex].memo = editedMemo;
+        setHistorydata(updatedHistoryData);
+      } else {
+        toast.error("메모 저장에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("메모 저장 오류:", error);
+      toast.error("메모 저장 중 오류가 발생했습니다.");
+    }
+
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     if (error) {
@@ -177,6 +214,12 @@ const History: React.FC<HistoryProps> = ({ historyData, error }) => {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
+      <HistoryMemoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        memo={selectedMemo}
+        onSave={saveMemo}
+      />
       <div className="text-2xl font-bold mt-10 mb-5">히스토리</div>
       <div className="flex justify-center items-center mb-6 space-x-4">
         {/* 연도 */}
@@ -214,7 +257,7 @@ const History: React.FC<HistoryProps> = ({ historyData, error }) => {
         {filteredHistoryData.length === 0 ? (
           renderEmptyMessage()
         ) : (
-          <div className="relative grid grid-cols-1 gap-4">
+          <div className="relative grid grid-cols-1">
             {/* 왼쪽 화살표 (첫 데이터가 아닐 때만 표시) */}
             {currentIndex > 0 && (
               <div
@@ -226,7 +269,7 @@ const History: React.FC<HistoryProps> = ({ historyData, error }) => {
             )}
 
             {/* 현재 인덱스의 데이터를 보여줌 */}
-            <div className="bg-white shadow-md border border-gray-400 rounded-xl px-8 pt-6 pb-8 mb-4 flex flex-col items-center">
+            <div className="bg-white shadow-md border border-gray-400 rounded-xl px-8 pt-6 pb-8 mb-4  flex flex-col items-center">
               {/* 데이터 내용은 여기에 배치 */}
               <p className="font-bold text-xl mb-4">
                 {filteredHistoryData[currentIndex].foodname}
@@ -242,7 +285,12 @@ const History: React.FC<HistoryProps> = ({ historyData, error }) => {
               </div>
               <div className="flex justify-center mb-2">
                 <p className="mx-2">메모</p>
-                <button className="" onClick={() => {}}>
+                <button
+                  className=""
+                  onClick={() =>
+                    handleMemoClick(filteredHistoryData[currentIndex].memo)
+                  }
+                >
                   <FontAwesomeIcon icon={faPenToSquare} size="xl" />
                 </button>
               </div>
