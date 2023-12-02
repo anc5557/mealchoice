@@ -12,7 +12,11 @@ import withAuth from "@/hooks/withAuth";
 import nookies from "nookies";
 import { admin } from "@/firebase/firebaseAdmin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import memo from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faArrowLeft,
+  faPenToSquare,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface HistoryProps {
   historyData: {
@@ -151,23 +155,10 @@ const History: React.FC<HistoryProps> = ({ historyData, error }) => {
   const PrevArrow = ({ onClick }: { onClick: () => void }) => {
     return (
       <div
-        className="absolute top-1/2 left-4 bg-white rounded-full shadow-md"
+        className="absolute top-1/2 left-3 bg-white rounded-full shadow-md"
         onClick={onClick}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
+        <FontAwesomeIcon icon={faArrowLeft} size="lg" />
       </div>
     );
   };
@@ -176,23 +167,10 @@ const History: React.FC<HistoryProps> = ({ historyData, error }) => {
   const NextArrow = ({ onClick }: { onClick: () => void }) => {
     return (
       <div
-        className="absolute top-1/2 right-4 bg-white rounded-full shadow-md"
+        className="absolute top-1/2 right-3 bg-white rounded-full shadow-md"
         onClick={onClick}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
+        <FontAwesomeIcon icon={faArrowRight} size="lg" />
       </div>
     );
   };
@@ -203,7 +181,7 @@ const History: React.FC<HistoryProps> = ({ historyData, error }) => {
       <div className="flex justify-center items-center mb-6 space-x-4">
         {/* 연도 */}
         <select
-          className="border border-gray-300 p-2 text-sm"
+          className="border border-gray-300 p-2 text-sm rounded-lg"
           value={year}
           onChange={(e) => {
             setYear(Number(e.target.value));
@@ -218,7 +196,7 @@ const History: React.FC<HistoryProps> = ({ historyData, error }) => {
 
         {/* 월 */}
         <select
-          className="border border-gray-300 p-2 text-sm"
+          className="border border-gray-300 p-2 text-sm rounded-lg"
           value={month}
           onChange={(e) => {
             setMonth(Number(e.target.value));
@@ -248,37 +226,29 @@ const History: React.FC<HistoryProps> = ({ historyData, error }) => {
             )}
 
             {/* 현재 인덱스의 데이터를 보여줌 */}
-            <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col items-center">
+            <div className="bg-white shadow-md border border-gray-400 rounded-xl px-8 pt-6 pb-8 mb-4 flex flex-col items-center">
               {/* 데이터 내용은 여기에 배치 */}
-              <p className="font-bold text-xl mb-2">
+              <p className="font-bold text-xl mb-4">
                 {filteredHistoryData[currentIndex].foodname}
               </p>
               <p className="mb-2">
                 {formatDate(filteredHistoryData[currentIndex].date)}
               </p>
-              <div className="flex justify-center">
-                <p className="mx-2">
-                  {filteredHistoryData[currentIndex].time}{" "}
-                </p>
-                <p className="mx-2">
+              <div className="flex justify-center space-x-2">
+                <p>{filteredHistoryData[currentIndex].time} </p>
+                <p className="mb-4">
                   {filteredHistoryData[currentIndex].category}
                 </p>
               </div>
-              <p className="my-5 p-1 text-center overflow-y-auto w-72 h-32 scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+              <div className="flex justify-center mb-2">
+                <p className="mx-2">메모</p>
+                <button className="" onClick={() => {}}>
+                  <FontAwesomeIcon icon={faPenToSquare} size="xl" />
+                </button>
+              </div>
+              <p className="m-3 p-3 border shadow-md border-gray-300 rounded-xl text-center overflow-y-auto w-auto h-32 scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                 {filteredHistoryData[currentIndex].description}
               </p>
-
-              {/* 메모 버튼 */}
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() =>
-                  router.push(
-                    `/history/${filteredHistoryData[currentIndex].id}`
-                  )
-                }
-              >
-                <FontAwesomeIcon icon="fa-regular fa-memo" />
-              </button>
             </div>
 
             {/* 오른쪽 화살표 (마지막 데이터가 아닐 때만 표시) */}

@@ -1,4 +1,3 @@
-// src/pages/_app.tsx
 import React from "react";
 import { AppProps } from "next/app";
 import Head from "next/head";
@@ -9,6 +8,9 @@ import NavBar from "../components/NavBar";
 import "../styles/globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
 
 const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
   const user = useSelector((state: { user: any }) => state.user);

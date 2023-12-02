@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "../hooks/useAuth";
 import withAuth from "@/hooks/withAuth";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 const Index = () => {
   const { handleSocialLogin } = useAuth();
@@ -63,25 +65,13 @@ const Index = () => {
                 aria-label="Github login"
                 onClick={() => handleSocialLogin("github")}
               >
-                <Image
-                  src="/github-mark.svg"
-                  alt="Github login"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                />
+                <FontAwesomeIcon icon={faGithub} size="3x" />
               </button>
               <button
                 aria-label="Google login"
                 onClick={() => handleSocialLogin("google")}
               >
-                <Image
-                  src="/web_light_rd_na.svg"
-                  alt="Google Login"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                />
+                <FontAwesomeIcon icon={faGoogle} size="3x" />
               </button>
             </div>
           </div>
