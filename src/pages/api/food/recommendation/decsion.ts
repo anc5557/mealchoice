@@ -36,7 +36,6 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
         });
         res.status(200).json({ message: "success" });
       } catch (error) {
-
         res.status(500).json({ error: "Internal Server Error" });
       }
     } else {
