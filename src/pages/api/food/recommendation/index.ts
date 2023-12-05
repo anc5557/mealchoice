@@ -21,12 +21,13 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
       const { category, time } = req.body;
       const decodedToken = req.user;
 
-      // 싫어하는 음식 가져오기
+      // 음식 가져오기
       const foodDocRef = admin
         .firestore()
         .doc(`users/${decodedToken.uid}/foods/${decodedToken.uid}`);
       const foodDoc = await foodDocRef.get();
-      const hateFoods = foodDoc.data()?.hate;
+      const likeFoods = foodDoc.data()?.like; // 좋아요 음식
+      const hateFoods = foodDoc.data()?.hate; // 싫어요 음식
 
       // 제외기간 가져오기
       const exclusionPeriod = foodDoc.data()?.exclusionPeriod;
@@ -58,7 +59,7 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 
       // gpt4
       // 프롬프트
-      const prompt = `최근에 먹은 음식 : ${exclusionFoods}, 싫어하는 음식 : ${hateFoods} 
+      const prompt = `최근에 먹은 음식 : ${exclusionFoods}, 싫어하는 음식 : ${hateFoods}, 좋아하는 음식 : ${likeFoods}
       , json 형식 : {menu: "추천 음식 이름", description: "추천 이유 설명"}`;
 
       try {

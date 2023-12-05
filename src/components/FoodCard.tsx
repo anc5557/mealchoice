@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUndo,
   faCheck,
+  faThumbsUp,
   faThumbsDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { RootState } from "@/store";
@@ -19,15 +20,17 @@ interface Food {
 
 const FoodCard = () => {
   const reduxfood = useSelector((state: RootState) => state.food);
-  const { food, isLoading, recommendFood, addHistory, hateFood } = useFood();
+  const { food, isLoading, recommendFood, addHistory, hateFood, likeFood } =
+    useFood();
 
   // 좋아요, 싫어요 버튼 상태 관리
+  const [isOk, setIsOk] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
 
-  const handleLike = async () => {
-    if (isLiked) {
-      toast.error("이미 좋아요를 누르셨습니다.");
+  const handleOK = async () => {
+    if (isOk) {
+      toast.error("이미 결정하셨습니다.");
       return;
     }
 
@@ -54,6 +57,30 @@ const FoodCard = () => {
     }
   };
 
+  const handleLike = async () => {
+    if (isLiked) {
+      toast.error("이미 좋아요를 누르셨습니다.");
+      return;
+    }
+
+    if (!food) {
+      toast.error("음식 정보가 없습니다.");
+      return;
+    }
+
+    try {
+      // likeFood 함수
+      await likeFood(food.name);
+
+      setIsOk(true);
+      setIsLiked(true);
+      setIsDisliked(true);
+      toast.success("이 음식을 좋아요 목록에 추가했습니다..");
+    } catch (error) {
+      toast.error("실패했습니다.");
+    }
+  };
+
   const handleDislike = async () => {
     if (isDisliked) {
       toast.error("이미 싫어요를 누르셨습니다.");
@@ -68,6 +95,7 @@ const FoodCard = () => {
     try {
       // hateFood 함수
       await hateFood(food.name);
+      setIsOk(true);
       setIsLiked(true);
       setIsDisliked(true);
       toast.success("이 음식을 추천에서 제외했습니다.");
@@ -78,6 +106,7 @@ const FoodCard = () => {
 
   const handleRecommend = () => {
     recommendFood(reduxfood.category, reduxfood.time);
+    setIsOk(false);
     setIsLiked(false);
     setIsDisliked(false);
   };
@@ -129,7 +158,7 @@ const FoodCard = () => {
                 (isLoading || isLiked) && "opacity-50 cursor-not-allowed"
               }`}
               disabled={isLoading || isLiked}
-              onClick={handleLike}
+              onClick={handleOK}
             >
               <FontAwesomeIcon icon={faCheck} />
             </button>
@@ -140,6 +169,17 @@ const FoodCard = () => {
             >
               <FontAwesomeIcon icon={faUndo} />
             </button>
+            {/* 좋아요 버튼 */}
+            <button
+              className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ${
+                (isLoading || isLiked) && "opacity-50 cursor-not-allowed"
+              }`}
+              disabled={isLoading || isLiked}
+              onClick={handleLike}
+            >
+              <FontAwesomeIcon icon={faThumbsUp} />{" "}
+            </button>
+
             {/* 싫어요 버튼 */}
             <button
               className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${

@@ -181,6 +181,29 @@ export const useFood = () => {
     }
   };
 
+  const likeFood = async (foodname: string) => {
+    try {
+      const response = await axios.post(
+        `/api/food/recommendation/like`,
+        {
+          foodname,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        dispatch(addFoodReducers({ foodname, type: "like" }));
+        return response.data;
+      } else {
+        throw new Error("음식 추가에 실패했습니다.");
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   return {
     food,
     isLoading,
@@ -190,6 +213,7 @@ export const useFood = () => {
     addHistory,
     hateFood,
     getFood,
+    likeFood,
   };
 };
 
