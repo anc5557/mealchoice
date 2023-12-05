@@ -1,4 +1,4 @@
-// path : mealchoice/src/pages/api/auth/setToken.ts
+// path : mealchoice/src/pages/api/auth/setCookie.ts
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "nookies";

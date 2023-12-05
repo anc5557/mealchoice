@@ -118,7 +118,7 @@ export const useAuth = () => {
       const food = await getsetFoodData(result.user.uid);
 
       // 쿠키에 토큰 저장
-      await axios.post("/api/auth/setToken", { token });
+      await axios.post("/api/auth/setCookie", { token });
 
       dispatch(
         LoginSuccessReducers({
@@ -167,7 +167,7 @@ export const useAuth = () => {
       const food = await getsetFoodData(result.user.uid);
 
       // 쿠키에 토큰 저장
-      await axios.post("/api/auth/setToken", { token });
+      await axios.post("/api/auth/setCookie", { token });
 
       dispatch(
         LoginSuccessReducers({
