@@ -6,11 +6,12 @@ import router from "next/router";
 import { useAuth } from "../hooks/useAuth";
 import { ProfilePicture } from "../components/ProfilePicture";
 import { DisplayName } from "../components/DisplayName";
-import withAuth from "@/hooks/withAuth";
 import { useFood } from "@/hooks/useFood";
 import FoodModal from "../components/FoodModal"; // 모달창
 import "../styles/globals.css";
 import { toast } from "react-toastify";
+import axios from "axios";
+import { withUser } from "next-firebase-auth";
 
 const MyInfoPage = () => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -50,6 +51,7 @@ const MyInfoPage = () => {
   // 로그아웃을 처리합니다.
   const handleLogout = useCallback(() => {
     dispatch(LogoutSuccessReducers());
+    axios.get("/api/auth/logout");
     router.push("/");
     toast.success("로그아웃 되었습니다.");
   }, [dispatch]);
@@ -182,4 +184,4 @@ const MyInfoPage = () => {
   );
 };
 
-export default withAuth(MyInfoPage);
+export default withUser()(MyInfoPage);

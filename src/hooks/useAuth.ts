@@ -17,6 +17,9 @@ import { auth, db } from "../firebase/firebasedb";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
 import axios from "axios";
+import initAuth from "@/firebase/initAuth";
+
+initAuth();
 
 // 유저, 토큰, 음식 타입 정의
 interface Data {
@@ -88,56 +91,12 @@ export const useAuth = () => {
     }
 
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider); // 팝업창으로 로그인
 
-      // user 정보
-      const user = {
-        uid: result.user.uid,
-        email: result.user.email ?? "",
-        displayName: result.user.displayName ?? "",
-        photoURL: result.user.photoURL ?? "",
-      };
-
-      // Firestore에 사용자 정보 저장
-      const userRef = doc(db, "users", user.uid);
-      await setDoc(
-        userRef,
-        {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-        },
-        { merge: true }
-      );
-
-      // token 정보
-      const token = await result.user.getIdToken();
-
-      // food 정보
-      const food = await getsetFoodData(result.user.uid);
-
-      // 쿠키에 토큰 저장
-      await axios.post("/api/auth/setToken", { token });
-
-      dispatch(
-        LoginSuccessReducers({
-          isLoggedIn: true,
-          user,
-          food,
-        })
-      );
-
-      router.push("/home");
-    } catch (error) {
-      console.error("Social login error:", error);
-    }
-  };
-
-  // email 로그인
-  const handleEmailLogin = async (email: string, password: string) => {
-    try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
+      // 성공 시
+      await axios.get("/api/auth/login", {
+        headers: { Authorization: `Bearer ${result.user.getIdToken()}` },
+      }); // 토큰 저장
 
       // user 정보
       const user = {
@@ -160,14 +119,57 @@ export const useAuth = () => {
         { merge: true }
       ); // 기존 문서가 있으면 업데이트
 
-      // token 정보
-      const token = await result.user.getIdToken();
-
       // food 정보
       const food = await getsetFoodData(result.user.uid);
 
-      // 쿠키에 토큰 저장
-      await axios.post("/api/auth/setToken", { token });
+      // 리덕스 스토어에 저장
+      dispatch(
+        LoginSuccessReducers({
+          isLoggedIn: true,
+          user,
+          food,
+        })
+      );
+
+      router.push("/home");
+    } catch (error) {
+      console.error("Social login error:", error);
+    }
+  };
+
+  // email 로그인
+  const handleEmailLogin = async (email: string, password: string) => {
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password); // 이메일, 비밀번호로 로그인
+
+      // 성공 시
+      await axios.get("/api/auth/login", {
+        headers: { Authorization: `Bearer ${result.user.getIdToken()}` },
+      }); // 토큰 저장
+
+      // user 정보
+      const user = {
+        uid: result.user.uid,
+        email: result.user.email ?? "",
+        displayName: result.user.displayName ?? "",
+        photoURL: result.user.photoURL ?? "",
+      };
+
+      // Firestore에 사용자 정보 저장
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(
+        userRef,
+        {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        },
+        { merge: true }
+      ); // 기존 문서가 있으면 업데이트
+
+      // food 정보
+      const food = await getsetFoodData(result.user.uid);
 
       dispatch(
         LoginSuccessReducers({

@@ -10,7 +10,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import initAuth from "@/firebase/initAuth";
+
 config.autoAddCss = false;
+
+initAuth();
 
 const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
   const user = useSelector((state: { user: any }) => state.user);

@@ -3,11 +3,13 @@
 import { init } from "next-firebase-auth";
 
 const initAuth = () => {
+  if (typeof window !== "undefined") return;
+
   init({
     authPageURL: "/",
     appPageURL: "/home",
-    loginAPIEndpoint: "/api/login",
-    logoutAPIEndpoint: "/api/logout",
+    loginAPIEndpoint: "/api/auth/login",
+    logoutAPIEndpoint: "/api/auth/logout",
 
     firebaseAdminInitConfig: {
       credential: {
@@ -15,7 +17,7 @@ const initAuth = () => {
         clientEmail: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL!,
         privateKey: process.env.NEXT_PUBLIC_FIREBASE_PRIVATE_KEY!,
       },
-      databaseURL: "process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL",
+      databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
     },
     firebaseClientInitConfig: {
       apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!, // required
@@ -36,6 +38,8 @@ const initAuth = () => {
       secure: process.env.NODE_ENV === "production", // set this to false in local (non-HTTPS) development
       signed: true,
     },
+      
+
   });
 };
 
