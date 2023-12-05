@@ -49,6 +49,7 @@ const FoodCard = () => {
         reduxfood.time,
         ""
       );
+      setIsOk(true);
       setIsLiked(true);
       setIsDisliked(true);
       toast.success("좋아요! 이 음식으로 결정하셨습니다. 기록에서 확인하세요.");
