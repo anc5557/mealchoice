@@ -11,6 +11,8 @@ import { useFood } from "@/hooks/useFood";
 import FoodModal from "../components/FoodModal"; // 모달창
 import "../styles/globals.css";
 import { toast } from "react-toastify";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/firebasedb";
 
 const MyInfoPage = () => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -48,10 +50,16 @@ const MyInfoPage = () => {
   };
 
   // 로그아웃을 처리합니다.
-  const handleLogout = useCallback(() => {
-    dispatch(LogoutSuccessReducers());
-    router.push("/");
-    toast.success("로그아웃 되었습니다.");
+  const handleLogout = useCallback(async () => {
+    try {
+      await signOut(auth); // Firebase에서 로그아웃
+      dispatch(LogoutSuccessReducers()); // 리덕스 스토어 업데이트
+      router.push("/"); // 홈페이지로 리디렉션
+      toast.success("로그아웃 되었습니다.");
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+      toast.error("로그아웃에 실패했습니다.");
+    }
   }, [dispatch]);
 
   // 닉네임 수정을 시작
