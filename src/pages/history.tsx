@@ -19,6 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import HistoryMemoModal from "@/components/HistoryMemoModal";
 
+// 히스토리 데이터 타입
 interface HistoryProps {
   historyData: {
     id: string;
@@ -32,6 +33,7 @@ interface HistoryProps {
   error?: string;
 }
 
+// 서버에서 데이터 한번에 가져오기
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     // 요청에서 쿠키를 가져옵니다.
@@ -78,6 +80,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 };
+// 히스토리 페이지
 const History: React.FC<HistoryProps> = ({ historyData, error }) => {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);

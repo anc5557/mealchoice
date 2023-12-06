@@ -4,6 +4,7 @@ import FoodCategory from "@/components/FoodCategory";
 import FoodCard from "@/components/FoodCard";
 import withAuth from "@/hooks/withAuth";
 
+// 홈 페이지
 const Home = () => {
   return (
     <div className="flex flex-col min-h-screen justify-center flex-grow mx-10">

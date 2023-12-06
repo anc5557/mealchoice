@@ -12,6 +12,7 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
 
+// inner component : 로그인 여부에 따라 NavBar를 보여주는 컴포넌트
 const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
   const user = useSelector((state: { user: any }) => state.user);
   const isLoggedIn = !!user;
@@ -31,6 +32,7 @@ const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
   );
 };
 
+// App component : Provider와 PersistGate로 store를 감싸는 컴포넌트
 const App = ({ Component, pageProps, router }: AppProps) => {
   return (
     <Provider store={store}>
