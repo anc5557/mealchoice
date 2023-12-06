@@ -17,11 +17,3 @@ GPT-API를 활용해 음식 메뉴를 추천합니다.
 `<img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white">` `<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">` `<img src="https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white">` `<img src="https://img.shields.io/badge/redux-764ABC?style=for-the-badge&logo=redux&logoColor=white">` `<img src="https://img.shields.io/badge/tailwindcss-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">` `<img src="https://img.shields.io/badge/openai-412991?style=for-the-badge&logo=openai&logoColor=white">`
 
 ## 화면 구성
-
-```
-<p align="center">
-	<img src="image/README/1701842376905.png" align="center" width="32%">
-	<img src="image/README/1701843012154.png" align="center" width="32%">
-	<img src="image/README/스크린샷 2023-12-06 오후 3.16.05.png" align="center" width="32%">
-<figcaption align="center">3개 이미지 띄우기</figcaption></p>
-```
