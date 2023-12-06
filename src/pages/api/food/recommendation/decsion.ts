@@ -23,8 +23,6 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
           .firestore()
           .collection(`users/${decodedToken.uid}/history`);
 
-        console.log(historyCollectionRef);
-
         // 히스토리에 추가(문서 id는 자동 생성)
         await historyCollectionRef.add({
           foodname,
