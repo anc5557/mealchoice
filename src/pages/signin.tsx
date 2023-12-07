@@ -3,15 +3,16 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "../hooks/useAuth";
 import withAuth from "@/hooks/withAuth";
 
+
 const SignIn = () => {
-  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const user = useSelector((state: RootState) => state.user.user); // 사용자 정보를 가져옵니다.
   const [email, setEmail] = useState("");
@@ -29,8 +30,26 @@ const SignIn = () => {
     router.push("/");
   };
 
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      await handleEmailLogin(email, password);
+      setIsLoading(false);
+      router.push("/home");
+    } catch (error: unknown) {
+      setIsLoading(false);
+      alert((error as Error).message);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col justify-center items-center slide-in-right">
+      {isLoading && (
+        <div className="absolute inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="spinner"></div>
+        </div>
+      )}
       <div className="p-6 max-w-sm w-full bg-white  rounded-md">
         <div className="p-4">
           <button
@@ -45,9 +64,9 @@ const SignIn = () => {
               stroke="currentColor"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M15 19l-7-7 7-7"
               />
             </svg>
@@ -59,13 +78,7 @@ const SignIn = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
           로그인
         </h2>
-        <form
-          className="space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleEmailLogin(email, password);
-          }}
-        >
+        <form className="space-y-6" onSubmit={handleLogin}>
           <div>
             <label
               htmlFor="email"
@@ -99,14 +112,11 @@ const SignIn = () => {
             />
           </div>
           <div className="flex items-center justify-end">
-            <div>
-              <a
-                href="#"
-                className="font-medium text-sm text-blue-600 hover:text-blue-500"
-              >
+            <Link href="/ResetPassword">
+              <span className="font-medium text-sm text-blue-600 hover:text-blue-500">
                 비밀번호를 잊으셨나요?
-              </a>
-            </div>
+              </span>
+            </Link>
           </div>
           <button
             type="submit"

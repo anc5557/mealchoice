@@ -226,7 +226,7 @@ export const useAuth = () => {
         "users",
         userCredential.user.uid,
         "foods",
-        "preferences"
+        userCredential.user.uid
       );
       await setDoc(foodsRef, {
         ExclusionPeriod: 1,
@@ -234,16 +234,36 @@ export const useAuth = () => {
         like: [],
       });
 
-      router.push("/sigin");
+      // token 정보
+      const token = await userCredential.user.getIdToken();
+
+      // 쿠키에 토큰 저장
+      await axios.post("/api/auth/setCookie", { token });
+
+      // 리덕스 스토어에 사용자 정보 저장
+      dispatch(
+        LoginSuccessReducers({
+          isLoggedIn: true,
+          user: {
+            uid: userCredential.user.uid,
+            email,
+            displayName: name,
+            photoURL: "/default-profile.png",
+          },
+          food: {
+            exclusionPeriod: 1,
+            hate: [],
+            like: [],
+          },
+        })
+      );
+
+      router.push("/home");
     } catch (error) {
-      if (typeof error === "object" && error !== null && "code" in error) {
-        const firebaseError = error as FirebaseError;
-        const errorMessage =
-          FIREBASE_ERRORS[firebaseError.code] ||
-          "회원가입 처리 중 오류가 발생했습니다.";
-        handleError(errorMessage);
+      if (error instanceof Error) {
+        throw new Error(error.message);
       } else {
-        handleError("회원가입 처리 중 오류가 발생했습니다.");
+        throw new Error("회원가입 처리 중 오류가 발생했습니다.");
       }
     }
   };
