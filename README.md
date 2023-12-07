@@ -22,3 +22,19 @@ GPT-API를 활용해 음식 메뉴를 추천합니다.
 ![OpenAI](https://img.shields.io/badge/openai-412991?style=for-the-badge&logo=openai&logoColor=white)
 
 ## 화면 구성
+
+### 인덱스 페이지, 로그인 페이지, 회원가입 페이지
+
+![회원페이지](image/README/1.png)
+
+### 추천 페이지
+
+![메인페이지](image/README/2.png)
+
+### 히스토리 페이지
+
+![히스토리페이지](image/README/3.png)
+
+### 내정보 페이지
+
+![내정보페이지](image/README/4.png)
