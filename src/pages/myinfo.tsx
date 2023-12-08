@@ -1,7 +1,12 @@
-import React, { useState, useCallback } from "react";
+//path : src/pages/myinfo.tsx
+
+import React, { useState, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
-import { LogoutSuccessReducers } from "../features/userSlice";
+import {
+  LogoutSuccessReducers,
+  EditProfileImageReducers,
+} from "../features/userSlice";
 import router from "next/router";
 import { useAuth } from "../hooks/useAuth";
 import { ProfilePicture } from "../components/ProfilePicture";
@@ -21,7 +26,7 @@ const MyInfoPage = () => {
     (state: RootState) => state.user.food.exclusionPeriod
   );
   const dispatch = useDispatch();
-  const { handleEditDisplayName } = useAuth();
+  const { handleEditDisplayName, handleEditProfileImage } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [newDisplayName, setNewDisplayName] = useState(user?.displayName || "");
@@ -56,7 +61,6 @@ const MyInfoPage = () => {
       // Firebase에서 로그아웃
       await signOut(auth);
       await axios.post("/api/auth/destroyCookie");
-
 
       // 리덕스 스토어 업데이트
       dispatch(LogoutSuccessReducers());
@@ -109,6 +113,32 @@ const MyInfoPage = () => {
     toast.success("설정이 저장되었습니다.");
   };
 
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setIsLoading(true);
+      try {
+        const response = await handleEditProfileImage(file);
+        if (response && response.data && response.data.photoURL) {
+          dispatch(EditProfileImageReducers(response.data.photoURL)); // 스토어 업데이트
+          toast.success("프로필 이미지가 업데이트 되었습니다.");
+        }
+      } catch (error) {
+        toast.error("이미지 업로드에 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const handleProfilePictureClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="container mx-auto p-4">
       {isLoading && (
@@ -116,10 +146,21 @@ const MyInfoPage = () => {
           <div className="spinner"></div>
         </div>
       )}
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+        style={{ display: "none" }}
+        ref={fileInputRef}
+      />
       <div className="bg-white shadow rounded-lg p-6">
         {user ? (
           <div className="flex items-center space-x-6 mb-4 mt-4">
-            <ProfilePicture src={user.photoURL || ""} alt="프로필 사진" />
+            <ProfilePicture
+              src={user.photoURL || ""}
+              alt="프로필 사진"
+              onClick={handleProfilePictureClick}
+            />
             <div className="flex flex-col justify-center">
               <DisplayName
                 isEditing={isEditing}

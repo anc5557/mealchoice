@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import {
   LoginSuccessReducers,
   EditDisplayNameReducers,
+  EditProfileImageReducers,
 } from "../features/userSlice";
 import { useRouter } from "next/router";
 import { auth, db } from "../firebase/firebasedb";
@@ -301,11 +302,51 @@ export const useAuth = () => {
     }
   };
 
+  // 프로필 사진 업로드
+  // API 라우트 사용, axios 사용
+  // 입력 : 파일, 쿠키
+  // 출력 : 성공 메시지
+
+  const handleEditProfileImage = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axios.post(
+        "/api/auth/uploadProfileImage",
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        // 리덕스 스토어에 저장된 사용자 정보 업데이트
+        dispatch(EditProfileImageReducers(response.data.photoURL));
+
+        return response.data;
+      } else {
+        throw new Error("사용자 정보 변경에 실패했습니다.");
+      }
+    } catch (error) {
+      if (typeof error === "object" && error !== null && "code" in error) {
+        const firebaseError = error as FirebaseError;
+        const errorMessage =
+          FIREBASE_ERRORS[firebaseError.code] ||
+          "사용자 정보 변경에 실패했습니다.";
+        handleError(errorMessage);
+      } else {
+        handleError("사용자 정보 변경에 실패했습니다.");
+      }
+    }
+  };
+
   return {
     handleSocialLogin,
     handleEmailLogin,
     handleEmailSignup,
     handleEditDisplayName,
+    handleEditProfileImage,
   };
 };
 

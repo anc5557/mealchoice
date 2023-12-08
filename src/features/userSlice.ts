@@ -84,6 +84,12 @@ export const userSlice = createSlice({
         state.food.hate.push(foodname);
       }
     },
+    // 프로필 이미지 변경
+    EditProfileImageReducers: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.photoURL = action.payload;
+      }
+    },
   },
 });
 
@@ -94,6 +100,7 @@ export const {
   setExclusionPeriodReducers,
   removeFoodReducers,
   addFoodReducers,
+  EditProfileImageReducers,
 } = userSlice.actions;
 
 const persistConfig = {

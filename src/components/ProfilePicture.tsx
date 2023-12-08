@@ -1,12 +1,14 @@
+// path : src/components/ProfilePicture.tsx
 import Image from "next/image";
 
 interface ProfilePictureProps {
   src: string;
   alt: string;
+  onClick?: () => void;
 }
 
-const ProfilePicture = ({ src, alt }: ProfilePictureProps) => (
-  <div className="relative shrink-0">
+const ProfilePicture = ({ src, alt, onClick }: ProfilePictureProps) => (
+  <div className="relative shrink-0" onClick={onClick}>
     <Image
       src={src}
       alt={alt}
