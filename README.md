@@ -60,7 +60,7 @@ GPT-API를 활용해 음식 메뉴를 추천합니다.
 
 ## 개발 내용
 
-### 1. 회원
+### 1. 로그인, 회원가입, 비밀번호 재설정
 
 파이어베이스를 활용해 소셜 로그인, 이메일 로그인 기능
 
@@ -124,3 +124,11 @@ DB 구조
         - category : String
         - time : String
         - memo : String
+
+### 4. 프로필 이미지 변경
+
+firebase에 Storage 사용
+
+파일 경로 : users/{uid}/profile/{uid}.png
+
+덮어쓰기로 만들어 한개의 uid당 한개의 프로필 이미지만 되도록 함
