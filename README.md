@@ -129,6 +129,6 @@ DB 구조
 
 firebase에 Storage 사용
 
-파일 경로 : users/{uid}/profile/{uid}.png
+파일 경로 : users/{uid}/profile-image.png
 
 덮어쓰기로 만들어 한개의 uid당 한개의 프로필 이미지만 되도록 함.
