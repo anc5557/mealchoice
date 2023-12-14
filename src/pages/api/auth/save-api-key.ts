@@ -20,15 +20,7 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 
         // 파이어스토어에서 users 컬렉션에 해당 uid에 apikey 필드에 요청받은 apikey 수정, 없으면 생성
         const userDocRef = admin.firestore().doc(`users/${uid}/`);
-        await userDocRef.set({ apiKey: req.body.apiKey }, { merge: true });
-
-        // apikey 쿠키 설정
-        setCookie({ res }, "apiKey", apiKey, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV !== "development",
-          maxAge: 30 * 24 * 60 * 60, // 30일
-          path: "/",
-        });
+        await userDocRef.set({ apiKey: apiKey }, { merge: true });
 
         res.status(200).json({ success: true, message: "API 키 저장 성공" });
       } catch (error) {

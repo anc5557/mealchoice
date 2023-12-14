@@ -13,12 +13,11 @@ import { useSelector } from "react-redux";
 import useFood from "@/hooks/useFood";
 import { toast } from "react-toastify";
 
-interface Food {
-  name: string;
-  description: string;
+interface FoodCardProps {
+  hasApiKey: boolean;
 }
 
-const FoodCard = () => {
+const FoodCard: React.FC<FoodCardProps> = ({ hasApiKey }) => {
   const reduxfood = useSelector((state: RootState) => state.food);
   const { food, isLoading, recommendFood, addHistory, hateFood, likeFood } =
     useFood();
@@ -106,6 +105,11 @@ const FoodCard = () => {
   };
 
   const handleRecommend = () => {
+    if (!hasApiKey) {
+      toast.error("API 키가 필요합니다. 내정보에서 입력해주세요.");
+      return;
+    }
+
     recommendFood(reduxfood.category, reduxfood.time);
     setIsOk(false);
     setIsLiked(false);

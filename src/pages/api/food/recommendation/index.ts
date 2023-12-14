@@ -13,11 +13,6 @@ interface NextApiRequestWithUser extends NextApiRequest {
 const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
   await verifyAuthToken(req, res, async () => {
     if (req.method === "POST") {
-      const openai = new OpenAI({
-        apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-        organization: process.env.NEXT_PUBLIC_OPENAI_ORGANIZATION,
-      });
-
       const { category, time } = req.body;
       const decodedToken = req.user;
 
@@ -57,7 +52,16 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
           return food.foodname;
         });
 
+      //api key 가져오기
+      const userDocRef = admin.firestore().doc(`users/${decodedToken.uid}/`);
+      const userDoc = await userDocRef.get();
+      const apiKey = userDoc.data()?.apiKey;
+
       // gpt4
+      const openai = new OpenAI({
+        apiKey: apiKey,
+      });
+
       // 프롬프트
       const prompt = `최근에 먹은 음식 : ${exclusionFoods}, 싫어하는 음식 : ${hateFoods}, 좋아하는 음식 : ${likeFoods}
       , json 형식 : {menu: "추천 음식 이름", description: "추천 이유 설명"}`;

@@ -13,11 +13,6 @@ export default async function handler(
     const decodedToken = await admin.auth().verifyIdToken(token);
     const uid = decodedToken.uid;
 
-    // 파이어스토어에서 users 컬렉션에 해당 uid에 apikey 필드가 있는지 확인
-    const userDocRef = admin.firestore().doc(`users/${uid}/`);
-    const userDoc = await userDocRef.get();
-    const userDocData = userDoc.data();
-
     // 쿠키 설정
     setCookie({ res }, "authToken", token, {
       httpOnly: true,
@@ -25,16 +20,6 @@ export default async function handler(
       maxAge: 30 * 24 * 60 * 60, // 30일
       path: "/",
     });
-
-    // API 키가 있다면 함께 저장
-    if (userDocData && userDocData.apiKey) {
-      setCookie({ res }, "apiKey", userDocData.apiKey, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV !== "development",
-        maxAge: 30 * 24 * 60 * 60, // 30일
-        path: "/",
-      });
-    }
 
     res.status(200).json({ message: "로그인 성공, 쿠키 설정됨" });
   } catch (error) {

@@ -31,7 +31,7 @@ const MyInfoPage = () => {
   const { handleEditDisplayName, handleEditProfileImage } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [gptApiKey, setGptApiKey] = useState("");
+  const [apiKey, setapiKey] = useState("");
   const [newDisplayName, setNewDisplayName] = useState(user?.displayName || "");
   const { removeFood } = useFood();
 
@@ -146,14 +146,14 @@ const MyInfoPage = () => {
 
   // GPT API 키를 서버에 저장하는 함수
   const handleSaveGptApiKey = async () => {
-    if (!gptApiKey) {
+    if (!apiKey) {
       toast.error("API 키를 입력해주세요.");
       return;
     }
 
     setIsLoading(true);
     try {
-      await axios.post("/api/save-api-key", { gptApiKey });
+      await axios.post("/api/auth/save-api-key", { apiKey: apiKey });
       toast.success("API 키가 저장되었습니다.");
     } catch (error) {
       toast.error("API 키 저장에 실패했습니다.");
@@ -269,8 +269,8 @@ const MyInfoPage = () => {
             <input
               id="gpt-api-key"
               type="text"
-              value={gptApiKey}
-              onChange={(e) => setGptApiKey(e.target.value)}
+              value={apiKey}
+              onChange={(e) => setapiKey(e.target.value)}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-1/3 p-3"
               placeholder="여기에 API 키를 입력하세요"
             />

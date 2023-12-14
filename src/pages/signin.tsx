@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useAuth } from "../hooks/useAuth";
 import withAuth from "@/hooks/withAuth";
 
-
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -93,6 +92,7 @@ const SignIn = () => {
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="이메일을 입력하세요"
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div>
@@ -109,6 +109,8 @@ const SignIn = () => {
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="비밀번호를 입력하세요"
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
             />
           </div>
           <div className="flex items-center justify-end">
