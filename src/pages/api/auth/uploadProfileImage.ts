@@ -58,11 +58,9 @@ const handler = async (req: NextApiRequestWithUser, res: NextApiResponse) => {
         return;
       }
 
-      // 파일 이름 설정
-      const fileName = `${decodedToken.uid}.png`;
       // 파일 업로드
       const uploadSnapshot = await uploadBytes(
-        ref(storage, `users/${decodedToken.uid}/profile/${fileName}`),
+        ref(storage, `users/${decodedToken.uid}/profile-image.png`),
         req.file.buffer
       );
 

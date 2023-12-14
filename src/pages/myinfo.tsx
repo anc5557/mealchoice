@@ -18,6 +18,8 @@ import "../styles/globals.css";
 import { toast } from "react-toastify";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebasedb";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 const MyInfoPage = () => {
@@ -29,6 +31,7 @@ const MyInfoPage = () => {
   const { handleEditDisplayName, handleEditProfileImage } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [gptApiKey, setGptApiKey] = useState("");
   const [newDisplayName, setNewDisplayName] = useState(user?.displayName || "");
   const { removeFood } = useFood();
 
@@ -106,10 +109,12 @@ const MyInfoPage = () => {
   const handleExclusionPeriodChange = async (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    setIsLoading(true);
     const days = parseInt(event.target.value, 10);
 
     // 선택된 기간을 저장합니다.
     await updateExclusionPeriod(days);
+    setIsLoading(false);
     toast.success("설정이 저장되었습니다.");
   };
 
@@ -138,6 +143,24 @@ const MyInfoPage = () => {
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // GPT API 키를 서버에 저장하는 함수
+  const handleSaveGptApiKey = async () => {
+    if (!gptApiKey) {
+      toast.error("API 키를 입력해주세요.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await axios.post("/api/save-api-key", { gptApiKey });
+      toast.success("API 키가 저장되었습니다.");
+    } catch (error) {
+      toast.error("API 키 저장에 실패했습니다.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -225,6 +248,37 @@ const MyInfoPage = () => {
               className="px-3 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600"
             >
               싫어하는 음식
+            </button>
+          </div>
+        </div>
+        <div className="mt-8">
+          <label
+            htmlFor="gpt-api-key"
+            className="block mb-3 text-lg font-medium text-gray-900"
+          >
+            GPT API KEY
+          </label>
+          <div className="text-sm mb-3">
+            이 서비스를 사용하려면 GPT API 키가 필요합니다.
+          </div>
+          <div className="text-sm mb-4">아래에 입력하고 저장을 눌러주세요.</div>
+          <div
+            className="flex items-center space-x-3
+          "
+          >
+            <input
+              id="gpt-api-key"
+              type="text"
+              value={gptApiKey}
+              onChange={(e) => setGptApiKey(e.target.value)}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-1/3 p-3"
+              placeholder="여기에 API 키를 입력하세요"
+            />
+            <button
+              onClick={handleSaveGptApiKey}
+              className="p-3 bg-blue-500 text-white hover:bg-blue-600 inline-flex items-center rounded-full"
+            >
+              <FontAwesomeIcon icon={faSave} />
             </button>
           </div>
         </div>
