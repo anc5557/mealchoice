@@ -22,7 +22,7 @@ const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
       <Head>
         <title>Meal Choice</title>
         <meta name="description" content="Meal Choice" />
-        <link rel="icon" href="/logo.ico" />
+        <link rel="icon" href="/logo.png" />
       </Head>
       <div className="min-h-screen">
         <Component {...pageProps} />
