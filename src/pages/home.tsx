@@ -14,16 +14,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = nookies.get(context);
     const token = cookies.authToken; // 쿠키에서 토큰 추출
 
-    // 토큰이 없으면 에러 처리
-    if (!token) {
-      return {
-        redirect: {
-          destination: "/", // 로그인 페이지로 리디렉션
-          permanent: false,
-        },
-      };
-    }
-
     // 토큰 검증
     const decodedToken = await admin.auth().verifyIdToken(token);
 
@@ -45,12 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   } catch (error) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
+    return { props: { hasApiKey: false } };
   }
 };
 

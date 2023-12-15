@@ -111,6 +111,7 @@ DB 구조
     - displayName : String
     - email : String
     - photoURL : String
+    - apiKey : String
     - foods(하위 컬렉션)
       - uid(문서)
         - exclusionPeriod : Number
