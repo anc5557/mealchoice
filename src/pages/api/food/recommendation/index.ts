@@ -3,7 +3,7 @@
 // 음식 추천 api
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyAuthToken } from "@/middleware/verifyAuthToken";
-import { admin } from "@/firebase/firebaseAdmin";
+import admin from "@/firebase/firebaseAdmin";
 import OpenAI from "openai";
 
 interface NextApiRequestWithUser extends NextApiRequest {

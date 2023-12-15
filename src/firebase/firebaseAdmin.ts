@@ -1,13 +1,16 @@
-// src/firebase/firebaseAdmin.ts
-
 import * as admin from "firebase-admin";
 
-var serviceAccount = require("../../mealchoice-6e41a-firebase-adminsdk-a7n7p-484eb8973e.json");
+const firebasePrivateKey = process.env.NEXT_PUBLIC_FIREBASE_PRIVATE_KEY;
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert({
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      clientEmail: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL,
+      privateKey: firebasePrivateKey?.replace(/\\n/g, "\n"),
+    }),
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
   });
 }
 
-export { admin };
+export default admin;

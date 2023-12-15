@@ -1,7 +1,7 @@
 // pages/api/food/[foodname].ts
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { admin } from "@/firebase/firebaseAdmin";
+import admin from "@/firebase/firebaseAdmin";
 import { verifyAuthToken } from "@/middleware/verifyAuthToken";
 
 interface NextApiRequestWithUser extends NextApiRequest {

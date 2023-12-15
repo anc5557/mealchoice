@@ -2,7 +2,7 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyAuthToken } from "@/middleware/verifyAuthToken";
-import { admin } from "@/firebase/firebaseAdmin";
+import admin from "@/firebase/firebaseAdmin";
 
 interface NextApiRequestWithUser extends NextApiRequest {
   user: { uid: string };

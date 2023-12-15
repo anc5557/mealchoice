@@ -10,7 +10,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import withAuth from "@/hooks/withAuth";
 import nookies from "nookies";
-import { admin } from "@/firebase/firebaseAdmin";
+import admin from "@/firebase/firebaseAdmin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,

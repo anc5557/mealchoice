@@ -4,7 +4,7 @@ import FoodCategory from "@/components/FoodCategory";
 import FoodCard from "@/components/FoodCard";
 import withAuth from "@/hooks/withAuth";
 import { GetServerSideProps } from "next";
-import { admin } from "@/firebase/firebaseAdmin";
+import admin from "@/firebase/firebaseAdmin";
 import nookies from "nookies";
 
 // getServerSideProps로 DB에 api key가 있는지 확인

@@ -2,7 +2,7 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { parseCookies } from "nookies";
-import { admin } from "@/firebase/firebaseAdmin";
+import admin from "@/firebase/firebaseAdmin";
 
 // NextApiRequest에 user 추가
 interface NextApiRequestWithUser extends NextApiRequest {

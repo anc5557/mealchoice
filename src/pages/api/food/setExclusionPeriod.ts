@@ -3,7 +3,7 @@
 // 출력값 : 성공시 200, 실패시 403
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { admin } from "@/firebase/firebaseAdmin";
+import admin from "@/firebase/firebaseAdmin";
 import { verifyAuthToken } from "@/middleware/verifyAuthToken";
 
 interface NextApiRequestWithUser extends NextApiRequest {

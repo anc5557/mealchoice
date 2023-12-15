@@ -3,7 +3,7 @@
 // 출력값 : 성공 여부
 
 import { NextApiRequest, NextApiResponse } from "next";
-import { admin } from "@/firebase/firebaseAdmin";
+import admin from "@/firebase/firebaseAdmin";
 import { verifyAuthToken } from "@/middleware/verifyAuthToken";
 
 interface NextApiRequestWithUser extends NextApiRequest {
