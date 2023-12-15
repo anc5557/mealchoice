@@ -139,4 +139,5 @@ firebase에 Storage 사용
 ### 5. 배포 
 
 vercel을 통해 배포  
-https://go-mealchoice.vercel.app
+웹사이트 주소 : https://go-mealchoice.vercel.app  
+git에 push하면 업데이트 가능
