@@ -140,4 +140,4 @@ firebase에 Storage 사용
 
 vercel을 통해 배포.  
 웹사이트 주소 : https://go-mealchoice.vercel.app  
-git에 push하면 업데이트 가능.
+git에 push하면 업데이트 가능. 
