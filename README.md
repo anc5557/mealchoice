@@ -8,6 +8,8 @@ GPT-API를 활용해 음식 메뉴를 추천합니다.
 
 최근에 먹은 음식 제외 기간과 좋아하는 음식, 싫어하는 음식을 설정 할 수 있습니다.
 
+[link]: https://go-mealchoice.vercel.app "Go Project"
+
 ## 프로젝트 기간
 
 2023-11-14 ~ 2023-12-6
@@ -133,3 +135,8 @@ firebase에 Storage 사용
 파일 경로 : users/{uid}/profile-image.png
 
 덮어쓰기로 만들어 한개의 uid당 한개의 프로필 이미지만 되도록 함.
+
+### 5. 배포 
+
+vercel을 통해 배포
+https://go-mealchoice.vercel.app
