@@ -138,5 +138,5 @@ firebase에 Storage 사용
 
 ### 5. 배포 
 
-vercel을 통해 배포
+vercel을 통해 배포  
 https://go-mealchoice.vercel.app
