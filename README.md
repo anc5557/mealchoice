@@ -8,7 +8,7 @@ GPT-API를 활용해 음식 메뉴를 추천합니다.
 
 최근에 먹은 음식 제외 기간과 좋아하는 음식, 싫어하는 음식을 설정 할 수 있습니다.
 
-[link]: https://go-mealchoice.vercel.app "Go Project"
+이 서비스가 궁금하시다면 [mealchoice](https://go-mealchoice.vercel.app)를 클릭하세요.
 
 ## 프로젝트 기간
 
