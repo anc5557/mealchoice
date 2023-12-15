@@ -1,7 +1,7 @@
 import React from "react";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "../store";
 import NavBar from "../components/NavBar";
@@ -12,37 +12,22 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
 
-// inner component : 로그인 여부에 따라 NavBar를 보여주는 컴포넌트
-const InnerComponent = ({ Component, pageProps, router }: AppProps) => {
-  const user = useSelector((state: { user: any }) => state.user);
-  const isLoggedIn = !!user;
-
-  return (
-    <>
-      <Head>
-        <title>Meal Choice</title>
-        <meta name="description" content="Meal Choice" />
-        <link rel="icon" href="/logo.png" />
-      </Head>
-      <div className="min-h-screen">
-        <Component {...pageProps} />
-      </div>
-      {isLoggedIn && <NavBar />}
-      <ToastContainer />
-    </>
-  );
-};
-
-// App component : Provider와 PersistGate로 store를 감싸는 컴포넌트
-const App = ({ Component, pageProps, router }: AppProps) => {
+const App = ({ Component, pageProps }: AppProps) => {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <InnerComponent
-          Component={Component}
-          pageProps={pageProps}
-          router={router}
-        />
+        <Head>
+          <title>Meal Choice</title>
+          <meta name="description" content="Meal Choice" />
+          <link rel="icon" href="/favicon.png" />
+          <link rel="shortcut icon" type="image/png" href="/logo.png" />
+          <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
+        </Head>
+        <div className="min-h-screen">
+          <Component {...pageProps} />
+        </div>
+        <NavBar />
+        <ToastContainer />
       </PersistGate>
     </Provider>
   );
