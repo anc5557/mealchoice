@@ -14,7 +14,6 @@ import { DisplayName } from "../components/DisplayName";
 import withAuth from "@/hooks/withAuth";
 import { useFood } from "@/hooks/useFood";
 import FoodModal from "../components/FoodModal"; // 모달창
-import "../styles/globals.css";
 import { toast } from "react-toastify";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebasedb";
