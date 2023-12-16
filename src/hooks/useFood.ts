@@ -91,12 +91,15 @@ export const useFood = () => {
     }
   };
 
+  const LAMBDA_FUNCTION_URL =
+    "https://he74u24jykgpopk3pgmtmulomu0bncaw.lambda-url.ap-northeast-2.on.aws/";
+
   // 음식 추천 함수
   const recommendFood = async (category: string, time: string) => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        `/api/food/recommendation`,
+        LAMBDA_FUNCTION_URL,
         {
           category,
           time,
@@ -214,7 +217,6 @@ export const useFood = () => {
     hateFood,
     getFood,
     likeFood,
-    
   };
 };
 
