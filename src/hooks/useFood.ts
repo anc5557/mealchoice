@@ -8,6 +8,7 @@ import {
 } from "../features/userSlice";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
 import { useState } from "react";
+import getAuthToken from "@/firebase/getAuthToken";
 
 interface FirebaseError extends Error {
   code: keyof typeof FIREBASE_ERRORS;
@@ -28,10 +29,12 @@ export const useFood = () => {
 
   const updateExclusionPeriod = async (days: number) => {
     try {
+      const token = await getAuthToken(); // 현재 로그인된 사용자의 인증 토큰
+
       const response = await axios.post(
         "/api/food/setExclusionPeriod",
         { days },
-        { withCredentials: true }
+        { headers: { authorization: `Bearer ${token}` } }
       );
 
       if (response.status === 200) {
@@ -58,8 +61,10 @@ export const useFood = () => {
   // 음식 가져오는 함수
   const getFood = async (reaction: "like" | "hate") => {
     try {
+      const token = await getAuthToken(); // 현재 로그인된 사용자의 인증 토큰
+
       const response = await axios.get(`/api/food/${reaction}`, {
-        withCredentials: true,
+        headers: { authorization: `Bearer ${token}` },
       });
 
       if (response.status === 200) {
@@ -75,9 +80,11 @@ export const useFood = () => {
   // 음식을 삭제하는 함수
   const removeFood = async (foodname: string, reaction: "like" | "hate") => {
     try {
+      const token = await getAuthToken(); // 현재 로그인된 사용자의 인증 토큰
+
       const response = await axios.delete(`/api/food/${reaction}`, {
         data: { foodname },
-        withCredentials: true,
+        headers: { authorization: `Bearer ${token}` },
       });
 
       if (response.status === 200) {
@@ -98,6 +105,9 @@ export const useFood = () => {
   const recommendFood = async (category: string, time: string) => {
     try {
       setIsLoading(true);
+
+      const token = await getAuthToken(); // 현재 로그인된 사용자의 인증 토큰
+
       const response = await axios.post(
         LAMBDA_FUNCTION_URL,
         {
@@ -105,7 +115,7 @@ export const useFood = () => {
           time,
         },
         {
-          withCredentials: true, //쿠키 전달
+          headers: { authorization: `Bearer ${token}` },
         }
       );
 
@@ -135,6 +145,8 @@ export const useFood = () => {
     memo: string
   ) => {
     try {
+      const token = await getAuthToken(); // 현재 로그인된 사용자의 인증 토큰
+
       const response = await axios.post(
         `/api/food/recommendation/decsion`,
         {
@@ -146,7 +158,7 @@ export const useFood = () => {
           memo,
         },
         {
-          withCredentials: true,
+          headers: { authorization: `Bearer ${token}` },
         }
       );
 
@@ -163,13 +175,15 @@ export const useFood = () => {
   // 을식 싫어요 함수
   const hateFood = async (foodname: string) => {
     try {
+      const token = await getAuthToken(); // 현재 로그인된 사용자의 인증 토큰
+
       const response = await axios.post(
         `/api/food/recommendation/hate`,
         {
           foodname,
         },
         {
-          withCredentials: true,
+          headers: { authorization: `Bearer ${token}` },
         }
       );
 
@@ -186,13 +200,15 @@ export const useFood = () => {
 
   const likeFood = async (foodname: string) => {
     try {
+      const token = await getAuthToken(); // 현재 로그인된 사용자의 인증 토큰
+
       const response = await axios.post(
         `/api/food/recommendation/like`,
         {
           foodname,
         },
         {
-          withCredentials: true,
+          headers: { authorization: `Bearer ${token}` },
         }
       );
 

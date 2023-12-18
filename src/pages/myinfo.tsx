@@ -20,6 +20,7 @@ import { auth } from "../firebase/firebasedb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import getAuthToken from "@/firebase/getAuthToken";
 
 const MyInfoPage = () => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -150,9 +151,20 @@ const MyInfoPage = () => {
       return;
     }
 
+    // token 가져오기
+    const token = await getAuthToken();
+
     setIsLoading(true);
     try {
-      await axios.post("/api/auth/save-api-key", { apiKey: apiKey });
+      await axios.post(
+        "/api/auth/save-api-key",
+        { apiKey: apiKey },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       toast.success("API 키가 저장되었습니다.");
     } catch (error) {
       toast.error("API 키 저장에 실패했습니다.");

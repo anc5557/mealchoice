@@ -18,6 +18,7 @@ import { auth, db } from "../firebase/firebasedb";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
 import axios from "axios";
+import getAuthToken from "@/firebase/getAuthToken";
 
 // 유저, 토큰, 음식 타입 정의
 interface Data {
@@ -111,8 +112,7 @@ export const useAuth = () => {
         },
         { merge: true }
       );
-
-      // token 정보
+      //token 정보
       const token = await result.user.getIdToken();
 
       // food 정보
@@ -275,10 +275,16 @@ export const useAuth = () => {
   // 출력 : 성공 메시지
   const handleEditDisplayName = async (newDisplayName: string) => {
     try {
+      const token = await getAuthToken(); // 현재 로그인된 사용자의 인증 토큰
+
       const response = await axios.post(
         "/api/auth/editDisplayName",
         { newDisplayName },
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 포함
+          },
+        }
       );
 
       if (response.status === 200) {
@@ -312,11 +318,15 @@ export const useAuth = () => {
       const formData = new FormData();
       formData.append("file", file);
 
+      const token = await getAuthToken(); // 현재 로그인된 사용자의 인증 토큰
+
       const response = await axios.post(
         "/api/auth/uploadProfileImage",
         formData,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 포함
+          },
         }
       );
 
