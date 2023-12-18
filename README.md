@@ -4,7 +4,7 @@
 
 GPT-API를 활용해 음식 메뉴를 추천합니다.
 
-음식 종류(한식, 중식, 일식, 양식, 분식)과 시간대(아침, 점심, 저녁, 야식)에 맞는 음식을 추천받을 수 있습다.
+음식 종류(한식, 중식, 일식, 양식, 분식)과 시간대(아침, 점심, 저녁, 야식)에 맞는 음식을 추천받을 수 있습니다.
 
 최근에 먹은 음식 제외 기간과 좋아하는 음식, 싫어하는 음식을 설정 할 수 있습니다.
 
@@ -102,7 +102,24 @@ const response = await openai.chat.completions.create({
 음식을 보고 ${time}에 먹을 ${category}을 추천해주세요.`"
 - response_format을 json으로 지정하면 답변을 json으로 받는다.
 
-### 3. 데이터베이스
+### 3. 인증
+
+투트랙(쿠키와 Bearer 토큰 )
+
+- nextjs에서 getServerSideProps를 사용한다고 하면 토큰을 전달하지 못하는 문제가 있음
+- 로그인 시, firebase에서 토큰을 가져와 쿠키를 설정
+- getServerSideProps 경우에는 요청에 쿠키를 담고, 그 외 다른 경우에는 Bearer 토큰으로
+
+### 4. AWS Lambda
+
+- vercel의 배포에서 시간 limit가 존재하는데, 무료버전에서는 10초
+- openai gpt api를 사용해 추천받는 api의 시간이 10초를 넘어가 작동하지 않는 문제 발생
+- 클라이언트 사이드에서 gpt api 호출은 사용자에게 입력받은 api키를 DB에서 가져오기 때문에 보안상 서버 사이드에서 진행해야 한다고 판단
+- 그래서 해당 api만 AWS Lambda로 교체
+- serveless 프레임워크로 타입스크립트 AWS lambda를 배포
+- Access-Control-Allow-Origin을 명시해 cors 문제 해결
+
+### 5. 데이터베이스
 
 파이어베이스의 firestore 사용
 
@@ -128,7 +145,7 @@ DB 구조
         - time : String
         - memo : String
 
-### 4. 프로필 이미지 변경
+### 6. 프로필 이미지 변경
 
 firebase에 Storage 사용
 
@@ -136,8 +153,8 @@ firebase에 Storage 사용
 
 덮어쓰기로 만들어 한개의 uid당 한개의 프로필 이미지만 되도록 함.
 
-### 5. 배포 
+### 7. 배포
 
 vercel을 통해 배포.  
-웹사이트 주소 : https://go-mealchoice.vercel.app  
-git에 push하면 업데이트 가능. 
+웹사이트 주소 : <https://go-mealchoice.vercel.app>  
+git에 push하면 업데이트 가능.
