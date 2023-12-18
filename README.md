@@ -118,6 +118,7 @@ const response = await openai.chat.completions.create({
 - 그래서 해당 api만 AWS Lambda로 교체
 - serveless 프레임워크로 타입스크립트 AWS lambda를 배포
 - Access-Control-Allow-Origin을 명시해 cors 문제 해결
+- AWS Lambda code : <https://github.com/anc5557/aws_lambda/tree/main/foodRecommendation>
 
 ### 5. 데이터베이스
 
