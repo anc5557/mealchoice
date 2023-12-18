@@ -99,7 +99,7 @@ export const useFood = () => {
   };
 
   const LAMBDA_FUNCTION_URL =
-    "https://ssmjd8vid5.execute-api.ap-northeast-2.amazonaws.com/dev/foodRecommendation";
+    "https://9sjak7ckfk.execute-api.ap-northeast-2.amazonaws.com/product/foodRecommendation";
 
   // 음식 추천 함수
   const recommendFood = async (category: string, time: string) => {
